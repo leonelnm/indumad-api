@@ -1,0 +1,12 @@
+POST http://localhost:3000/api/v1/user  HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Test",
+    "lastname": "TestLastname",
+    "dni": "12345678N",
+    "username" : "12345678N",
+    "password": "secret",
+    "phone": "555444333",
+    "role": "user"
+}
