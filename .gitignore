@@ -19,4 +19,4 @@ jspm_packages/
 .env
 .env.test
 
-database
+data
