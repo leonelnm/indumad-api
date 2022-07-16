@@ -1,10 +1,11 @@
 import { Router } from 'express'
 import { createUserHandler, findAllHandler, findByIdHandler } from '../controllers/user.controller.js'
+import validateToken from '../middlewares/validateToken.js'
 
 const userRouter = Router()
 
-userRouter.post('/', createUserHandler)
-userRouter.get('/', findAllHandler)
 userRouter.get('/:id', findByIdHandler)
+userRouter.get('/', validateToken, findAllHandler)
+userRouter.post('/', createUserHandler)
 
 export default userRouter

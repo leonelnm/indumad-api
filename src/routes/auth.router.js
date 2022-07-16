@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { generateToken } from '../services/jwt.service.js'
+import { generateToken } from '../services/auth.service.js'
 import { login } from '../services/user.service.js'
 
 const authRouter = Router()
@@ -14,7 +14,7 @@ authRouter.post('/login', async (req, res, next) => {
       return res.json(generateToken(user))
     }
 
-    return res.status(400).send({ msg: 'Invalid username or password' })
+    return res.status(401).send({ msg: 'Invalid username or password' })
   } catch (error) {
     next(error)
   }

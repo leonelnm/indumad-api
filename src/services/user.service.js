@@ -27,12 +27,15 @@ export const findUserById = async (id) => {
 
 export const login = async ({ username, password }) => {
   const user = await User.findOne({
-    attributes: ['username', 'password'],
+    attributes: ['id', 'username', 'password'],
     where: { username, active: true }
   })
 
   if (user && bcrypt.compareSync(password, user.password)) {
-    return user
+    return {
+      id: user.id,
+      username: user.username
+    }
   }
 
   return null
