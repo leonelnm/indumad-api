@@ -1,5 +1,6 @@
 import express from 'express'
 import morgan from 'morgan'
+import bodyParser from 'body-parser'
 import config from './config/config.js'
 import handleError from './middlewares/handleError.js'
 import notFoundError from './middlewares/notFoundError.js'
@@ -13,7 +14,7 @@ app.use(morgan('tiny'))
 
 app.disable('x-powered-by')
 app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({ extended: true }))
 
 // limit repeated failed requests to auth endpoints
 if (config.env === Environtment.PRODUCTION) {
