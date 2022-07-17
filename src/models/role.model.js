@@ -5,10 +5,26 @@ export class Role extends Model { }
 
 Role.init({
 
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: false }
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
+  name: {
+    type: DataTypes.STRING,
+    unique: {
+      msg: 'Role.name duplicado'
+    },
+    allowNull: false
+  }
 
 }, {
   sequelize: dbInstance,
-  timestamps: false
+  timestamps: false,
+  tableName: 'role',
+  defaultScope: {
+    attributes: {
+      exclude: ['id']
+    }
+  }
 })
