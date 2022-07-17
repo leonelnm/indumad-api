@@ -18,7 +18,7 @@ User.init({
     validate: {
       len: {
         args: [4, 50],
-        msg: 'Debe tener 5 o más caracteres'
+        msg: 'User.username Debe tener 5 o más caracteres'
       }
     }
   },
@@ -33,7 +33,7 @@ User.init({
     allowNull: false
   },
 
-  lastName: {
+  lastname: {
     type: DataTypes.STRING,
     allowNull: false
   },
@@ -52,7 +52,7 @@ User.init({
     validate: {
       len: {
         args: [5, 15],
-        msg: 'Debe tener 5 o más números'
+        msg: 'User.phone Debe tener 5 o más números'
       }
     }
   },
@@ -64,18 +64,21 @@ User.init({
     validate: {
       isIn: {
         args: [[true, false]],
-        msg: 'Valores permitidos: [true, false]'
+        msg: 'User.active Valores permitidos: [true, false]'
       }
     }
   }
 
 }, {
   hooks: {
-    beforeCreate: (user, options) => {
+    beforeCreate: (user) => {
       user.password = bcrypt.hashSync(user.password, config.saltRound)
+    },
+    afterCreate: (user) => {
+      delete user.dataValues.password
     }
   },
-
+  tableName: 'user',
   defaultScope: {
     attributes: {
       exclude: ['password']

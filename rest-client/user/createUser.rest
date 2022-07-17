@@ -2,15 +2,14 @@ POST http://localhost:3000/api/v1/user  HTTP/1.1
 content-type: application/json
 
 {
-    "username": "user",
-    "password": "user",
-    "name": "user",
-    "lastName": "user",
-    "dni": "12345",
+    "username": "admin",
+    "password": "123456",
+    "name": "admin",
+    "lastname": "admin",
+    "dni": "admin",
     "phone": "55555",
-    "active": "true",
     "roles": [{
-        "name": "USER"
+        "name": "SUPERADMIN"
     }]
     
 }

@@ -1,0 +1,10 @@
+POST http://localhost:3000/api/v1/role/custom HTTP/1.1
+content-type: application/json
+
+{
+  "roles": [{
+        "name": "GESTOR"
+    },{
+        "name": "NOEXISTE"
+    }]
+}

@@ -1,42 +1,74 @@
-import bcrypt from 'bcrypt'
+import { Role } from '../models/role.model.js'
 import { User } from '../models/user.model.js'
+import { findRoles } from './role.service.js'
 
 export const createUser = async (user) => {
-  return await User.create(user)
+  const rolesDB = await findRoles(user.roles)
+  console.log('Mis roles:', rolesDB.map(r => r.toJSON()))
+  if (rolesDB.length === 0) {
+    throw new Error('No se ha encontrado ningún role válido')
+  }
+
+  const userCreated = await User.create(user)
+  console.log('User creado: ', userCreated.toJSON())
+
+  for (const role of rolesDB) {
+    console.log('añadiendo: ', role.toJSON())
+    await userCreated.addRole(role)
+  }
+
+  const { dataValues: userFull } = await User.findOne({
+    include: {
+      model: Role,
+      as: 'roles',
+      through: {
+        attributes: []
+      }
+    },
+    where: { id: userCreated.id }
+  })
+
+  return userFull
 }
 
 export const findAll = async () => {
-  try {
-    const users = await User.findAll()
-    return users
-  } catch (error) {
-    console.log(error)
-    return { error: 'fail', stack: error.stack }
-  }
+  return await User.findAll({
+    include: {
+      model: Role,
+      as: 'roles',
+      through: {
+        attributes: []
+      }
+    }
+  })
 }
 
 export const findUserById = async (id) => {
-  try {
-    console.log({ id })
-    return await User.findByPk(id)
-  } catch (error) {
-    console.log(error)
-    return { error: 'fail', stack: error.stack }
-  }
-}
-
-export const login = async ({ username, password }) => {
-  const user = await User.findOne({
-    attributes: ['id', 'username', 'password'],
-    where: { username, active: true }
+  const user = await User.findByPk(id, {
+    include: {
+      model: Role,
+      as: 'roles',
+      attributes: ['name'],
+      required: true,
+      through: {
+        attributes: []
+      }
+    }
   })
 
-  if (user && bcrypt.compareSync(password, user.password)) {
-    return {
-      id: user.id,
-      username: user.username
-    }
-  }
+  return user
+}
 
-  return null
+export const findUserForLogin = async (username) => {
+  return await User.findOne({
+    attributes: ['id', 'username', 'password'],
+    include: {
+      model: Role,
+      as: 'roles',
+      through: {
+        attributes: []
+      }
+    },
+    where: { username, active: true }
+  })
 }

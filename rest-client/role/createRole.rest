@@ -1,6 +1,7 @@
 POST http://localhost:3000/api/v1/role  HTTP/1.1
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjo3LCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZXMiOlsiU1VQRVJBRE1JTiJdfSwiaWF0IjoxNjU4MDYxMjEyLCJleHAiOjE2NTgwOTAwMTJ9.2NTxovDBFp1hkCAtVWLvlTQzvqDBQ-dJAnUQtY4rnBc
 
 {
-    "name": "USER"
+    "name": "CONTRATADO"
 }

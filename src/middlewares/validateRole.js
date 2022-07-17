@@ -16,11 +16,15 @@ const validateRole = ({ userRoles = [], authorizedRoles = [] }) => {
 export const isSuperAdmin = (req, res, next) => {
   const authorizedRoles = [RoleEnumType.SUPERADMIN]
 
-  const { roles: userRoles } = req.user
-  if (validateRole({ userRoles, authorizedRoles })) {
-    next()
-  } else {
-    return res.status(401).send({ msg: 'No tiene suficientes permisos' })
+  try {
+    const { roles: userRoles } = req.user
+    if (validateRole({ userRoles, authorizedRoles })) {
+      next()
+    } else {
+      return res.status(401).send({ msg: 'Insufficient Permission' })
+    }
+  } catch (error) {
+    next(error)
   }
 }
 
@@ -30,11 +34,15 @@ export const isAdministrador = (req, res, next) => {
     RoleEnumType.SUPERADMIN
   ]
 
-  const { roles: userRoles } = req.user
-  if (validateRole({ userRoles, authorizedRoles })) {
-    next()
-  } else {
-    return res.status(401).send({ msg: 'No tiene suficientes permisos' })
+  try {
+    const { roles: userRoles } = req.user
+    if (validateRole({ userRoles, authorizedRoles })) {
+      next()
+    } else {
+      return res.status(401).send({ msg: 'Insufficient Permission' })
+    }
+  } catch (error) {
+    next(error)
   }
 }
 
@@ -45,11 +53,15 @@ export const isGestor = (req, res, next) => {
     RoleEnumType.SUPERADMIN
   ]
 
-  const { roles: userRoles } = req.user
-  if (validateRole({ userRoles, authorizedRoles })) {
-    next()
-  } else {
-    return res.status(401).send({ msg: 'No tiene suficientes permisos' })
+  try {
+    const { roles: userRoles } = req.user
+    if (validateRole({ userRoles, authorizedRoles })) {
+      next()
+    } else {
+      return res.status(401).send({ msg: 'Insufficient Permission' })
+    }
+  } catch (error) {
+    next(error)
   }
 }
 
@@ -60,11 +72,15 @@ export const isAutonomo = (req, res, next) => {
     RoleEnumType.SUPERADMIN
   ]
 
-  const { roles: userRoles } = req.user
-  if (validateRole({ userRoles, authorizedRoles })) {
-    next()
-  } else {
-    return res.status(401).send({ msg: 'No tiene suficientes permisos' })
+  try {
+    const { roles: userRoles } = req.user
+    if (validateRole({ userRoles, authorizedRoles })) {
+      next()
+    } else {
+      return res.status(401).send({ msg: 'Insufficient Permission' })
+    }
+  } catch (error) {
+    next(error)
   }
 }
 
@@ -75,10 +91,14 @@ export const isContratado = (req, res, next) => {
     RoleEnumType.SUPERADMIN
   ]
 
-  const { roles: userRoles } = req.user
-  if (validateRole({ userRoles, authorizedRoles })) {
-    next()
-  } else {
-    return res.status(401).send({ msg: 'No tiene suficientes permisos' })
+  try {
+    const { roles: userRoles } = req.user
+    if (validateRole({ userRoles, authorizedRoles })) {
+      next()
+    } else {
+      return res.status(401).send({ msg: 'Insufficient Permission' })
+    }
+  } catch (error) {
+    next(error)
   }
 }

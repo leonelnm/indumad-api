@@ -1,1 +1,2 @@
 GET http://localhost:3000/api/v1/user HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjozLCJ1c2VybmFtZSI6InRlc3QiLCJyb2xlcyI6WyJHRVNUT1IiXX0sImlhdCI6MTY1ODA2MDYyMCwiZXhwIjoxNjU4MDg5NDIwfQ.RXDyi_DfJjhuZ_N4Noh-VMNzxBjegmoZBW2CrsieFZk

@@ -11,3 +11,7 @@ export const Environtment = {
   DEVELOPMENT: 'development',
   TEST: 'test'
 }
+
+export const toArrayStringFromObjectType = (type = {}) => {
+  return Object.values(type)
+}

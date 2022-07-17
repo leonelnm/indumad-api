@@ -1,6 +1,5 @@
 import { Router } from 'express'
-import { generateToken } from '../services/auth.service.js'
-import { login } from '../services/user.service.js'
+import { generateToken, login } from '../services/auth.service.js'
 
 const authRouter = Router()
 

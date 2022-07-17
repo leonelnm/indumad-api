@@ -18,7 +18,7 @@ export const validateRoleSchema = (role = {}) => {
   if (role.name) {
     role.name = role.name.trim().toUpperCase()
   }
-  const { error, value } = roleSchema.prefs({ errors: { label: 'key' } }).validate(role)
+  const { error, value } = roleSchema.validate(role)
   let errorMsg
   if (error) {
     errorMsg = error.message

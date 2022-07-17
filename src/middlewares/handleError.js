@@ -14,7 +14,7 @@ export default (error, _req, res, _next) => {
       error: error.message
     })
   } else {
-    console.log('StackTrace', error.stack)
+    console.log('StackTrace', error)
     res.status(500).send({ error: 'Error inesperado, contacte con el Administrador' })
   }
 }

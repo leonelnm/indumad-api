@@ -2,14 +2,16 @@ import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import Joi from 'joi'
-import { Environtment } from '../types/roleEnumType.js'
+import { Environtment, toArrayStringFromObjectType } from '../types/roleEnumType.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 dotenv.config({ path: path.join(__dirname, '../../.env') })
 
+const validENvironments = toArrayStringFromObjectType(Environtment)
+
 const envVarsSchema = Joi.object().keys({
-  NODE_ENV: Joi.string().valid(Environtment.PRODUCTION, Environtment.DEVELOPMENT, Environtment.TEST).required(),
+  NODE_ENV: Joi.string().valid(...validENvironments).required(),
   PORT: Joi.number().default(3000),
 
   // JWT

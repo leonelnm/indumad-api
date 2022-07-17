@@ -7,11 +7,13 @@ export default (req, res, next) => {
 
     if (authorization && authorization.startsWith('Bearer ')) {
       const token = authorization.substring(7)
-      jwt.verify(token, config.jwt.secret)
+      const { data } = jwt.verify(token, config.jwt.secret)
+      req.user = data
+    } else {
+      return res.status(401).send({ msg: 'Token invalid or missing' }).end()
     }
   } catch (err) {
-    return res.status(400).send({ msg: 'Token invalid or missing' })
+    return res.status(401).send({ msg: 'Token invalid or missing' }).end()
   }
-
   next()
 }
