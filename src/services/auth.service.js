@@ -20,7 +20,7 @@ export const generateToken = ({ id, username, roles }) => {
 export const login = async ({ username, password }) => {
   const user = await findUserForLogin(username)
 
-  if (user && bcrypt.compareSync(password, user.password)) {
+  if (validatePassword({ password, user })) {
     return {
       id: user.id,
       username: user.username,
@@ -29,4 +29,12 @@ export const login = async ({ username, password }) => {
   }
 
   return null
+}
+
+export const validatePassword = ({ password, user = {} }) => {
+  return user && bcrypt.compareSync(password, user.password)
+}
+
+export const encryptPassword = ({ password }) => {
+  return bcrypt.hashSync(password, config.saltRound)
 }

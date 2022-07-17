@@ -1,7 +1,6 @@
 import { Model, DataTypes } from 'sequelize'
-import bcrypt from 'bcrypt'
 import { dbInstance } from '../config/database.js'
-import config from '../config/config.js'
+import { encryptPassword } from '../services/auth.service.js'
 
 export class User extends Model { }
 
@@ -72,7 +71,7 @@ User.init({
 }, {
   hooks: {
     beforeCreate: (user) => {
-      user.password = bcrypt.hashSync(user.password, config.saltRound)
+      user.password = encryptPassword({ password: user.password })
     },
     afterCreate: (user) => {
       delete user.dataValues.password

@@ -12,3 +12,22 @@ export const toNewUser = (userFromRequest) => {
 
   return newUser
 }
+
+export const toUserUpdate = (userFromRequest) => {
+  const updateUser = {
+    username: userFromRequest.username,
+    name: userFromRequest.name,
+    lastname: userFromRequest.lastname,
+    phone: userFromRequest.phone
+  }
+
+  return updateUser
+}
+
+export const toPasswordUpdate = ({ idFromParams, dataFromRequest = {} }) => {
+  const updatePassword = {}
+  updatePassword.id = idFromParams
+  updatePassword.password = dataFromRequest.password
+  updatePassword.newpassword = dataFromRequest.newpassword
+  return updatePassword
+}

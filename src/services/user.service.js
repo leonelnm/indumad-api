@@ -32,7 +32,8 @@ export const createUser = async (user) => {
 }
 
 export const findAll = async () => {
-  return await User.findAll({
+  return await User.findAll(
+    /* {
     include: {
       model: Role,
       as: 'roles',
@@ -40,7 +41,8 @@ export const findAll = async () => {
         attributes: []
       }
     }
-  })
+    } */
+  )
 }
 
 export const findUserById = async (id) => {
@@ -59,6 +61,24 @@ export const findUserById = async (id) => {
   return user
 }
 
+export const findUserWithRoles = async (where = {}) => {
+  console.log({ where })
+  const user = await User.findOne({
+    include: {
+      model: Role,
+      as: 'roles',
+      attributes: ['name'],
+      required: true,
+      through: {
+        attributes: []
+      }
+    },
+    where
+  })
+
+  return user
+}
+
 export const findUserForLogin = async (username) => {
   return await User.findOne({
     attributes: ['id', 'username', 'password'],
@@ -71,4 +91,8 @@ export const findUserForLogin = async (username) => {
     },
     where: { username, active: true }
   })
+}
+
+export const findUser = async (options) => {
+  return await User.findOne(options)
 }

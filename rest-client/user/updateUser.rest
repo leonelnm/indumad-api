@@ -1,0 +1,9 @@
+PUT http://localhost:3000/api/v1/user  HTTP/1.1
+content-type: application/json
+
+{
+	"username": "multi",
+	"name": "multi",
+	"lastname": "multi",
+	"phone": "55555"
+}
