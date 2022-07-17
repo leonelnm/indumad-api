@@ -1,6 +1,7 @@
 import app from './app.js'
 import config from './config/config.js'
 import { dbInstance } from './config/database.js'
+import './models/associations.js'
 
 const port = config.port
 app.listen(port, async () => {
