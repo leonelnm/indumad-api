@@ -1,6 +1,7 @@
 import express from 'express'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 import config from './config/config.js'
 import handleError from './middlewares/handleError.js'
 import notFoundError from './middlewares/notFoundError.js'
@@ -11,6 +12,8 @@ import { Environtment } from './types/roleEnumType.js'
 const app = express()
 
 app.use(morgan('tiny'))
+
+app.use(cors())
 
 app.disable('x-powered-by')
 app.use(express.json())
