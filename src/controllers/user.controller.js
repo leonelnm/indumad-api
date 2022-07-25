@@ -1,5 +1,6 @@
 import { compareUser } from '../helper/compare.js'
 import { toNewUser, toPasswordUpdate, toUserUpdate } from '../helper/converter.js'
+import { authorizedRoles, validateRole } from '../helper/utils.js'
 import { encryptPassword, validatePassword } from '../services/auth.service.js'
 import { createUser, findAll, findUser, findUserById, findUserWithRoles } from '../services/user.service.js'
 import { validateIdField, validatePasswordField } from '../validations/fieldValidator.js'
@@ -104,9 +105,15 @@ export const updatePasswordHandler = async (req, res, next) => {
       where: { id: updatePassword.id, active: true }
     })
 
+    const { roles: userRoles } = req.user
+
     // Si encuentra y password es correcta,
     // permite cambiar la password
-    if (userDB && validatePassword({ password: updatePassword.password, user: userDB })) {
+    if (userDB &&
+      (
+        validatePassword({ password: updatePassword.password, user: userDB }) ||
+        validateRole({ userRoles, authorizedRoles: authorizedRoles.gestor })
+      )) {
       userDB.password = encryptPassword({ password: updatePassword.newpassword })
       await userDB.save()
 
