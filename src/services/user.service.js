@@ -85,6 +85,8 @@ export const findUserForLogin = async (username) => {
     include: {
       model: Role,
       as: 'roles',
+      attributes: ['name'],
+      required: true,
       through: {
         attributes: []
       }
