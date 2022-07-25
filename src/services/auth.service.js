@@ -3,18 +3,30 @@ import jwt from 'jsonwebtoken'
 import config from '../config/config.js'
 import { findUserForLogin } from './user.service.js'
 
-export const generateToken = ({ id, username, roles }) => {
-  const { secret, tokenExpirationMinutes: expiresIn } = config.jwt
+const { secret, tokenExpirationMinutes: expiresIn } = config.jwt
 
+export const generateToken = ({ id, username, roles }) => {
   const payload = {
-    data: {
+    user: {
       id,
       username,
       roles
     }
   }
 
-  return { token: jwt.sign(payload, secret, { expiresIn: expiresIn * 60 }) }
+  return {
+    token: jwt.sign(payload, secret, { expiresIn: expiresIn * 60 }),
+    user: payload.user
+  }
+}
+
+export const verifyToken = (token) => {
+  return jwt.verify(token, secret, (err, payload) => {
+    if (err) {
+      throw new Error('Token invalid')
+    }
+    return { user: payload.user }
+  })
 }
 
 export const login = async ({ username, password }) => {
