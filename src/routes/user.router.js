@@ -6,7 +6,7 @@ import validateToken from '../middlewares/validateToken.js'
 
 const userRouter = Router()
 
-userRouter.get('/:id', findByIdHandler)
+userRouter.get('/:id', validateToken, expectedUserOrGestor, findByIdHandler)
 userRouter.get('/', validateToken, isGestor, findAllHandler)
 userRouter.post('/', validateToken, isGestor, createUserHandler)
 userRouter.put('/:id', validateToken, expectedUserOrGestor, updateUserHandler)
