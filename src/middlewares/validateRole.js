@@ -1,12 +1,9 @@
-import { validateRole } from '../helper/utils.js'
-import { RoleEnumType } from '../types/roleEnumType.js'
+import { authorizedRoles, validateRole } from '../helper/utils.js'
 
 export const isSuperAdmin = (req, res, next) => {
-  const authorizedRoles = [RoleEnumType.SUPERADMIN]
-
   try {
     const { roles: userRoles } = req.user
-    if (validateRole({ userRoles, authorizedRoles })) {
+    if (validateRole({ userRoles, authorizedRoles: authorizedRoles.superAdmin })) {
       next()
     } else {
       return res.status(401).send({ msg: 'Insufficient Permission' })
@@ -17,14 +14,9 @@ export const isSuperAdmin = (req, res, next) => {
 }
 
 export const isAdministrador = (req, res, next) => {
-  const authorizedRoles = [
-    RoleEnumType.ADMINISTRADOR,
-    RoleEnumType.SUPERADMIN
-  ]
-
   try {
     const { roles: userRoles } = req.user
-    if (validateRole({ userRoles, authorizedRoles })) {
+    if (validateRole({ userRoles, authorizedRoles: authorizedRoles.administrador })) {
       next()
     } else {
       return res.status(401).send({ msg: 'Insufficient Permission' })
@@ -35,15 +27,9 @@ export const isAdministrador = (req, res, next) => {
 }
 
 export const isGestor = (req, res, next) => {
-  const authorizedRoles = [
-    RoleEnumType.GESTOR,
-    RoleEnumType.ADMINISTRADOR,
-    RoleEnumType.SUPERADMIN
-  ]
-
   try {
     const { roles: userRoles } = req.user
-    if (validateRole({ userRoles, authorizedRoles })) {
+    if (validateRole({ userRoles, authorizedRoles: authorizedRoles.gestor })) {
       next()
     } else {
       return res.status(401).send({ msg: 'Insufficient Permission' })
@@ -54,15 +40,9 @@ export const isGestor = (req, res, next) => {
 }
 
 export const isAutonomo = (req, res, next) => {
-  const authorizedRoles = [
-    RoleEnumType.AUTONOMO,
-    RoleEnumType.ADMINISTRADOR,
-    RoleEnumType.SUPERADMIN
-  ]
-
   try {
     const { roles: userRoles } = req.user
-    if (validateRole({ userRoles, authorizedRoles })) {
+    if (validateRole({ userRoles, authorizedRoles: authorizedRoles.gestor })) {
       next()
     } else {
       return res.status(401).send({ msg: 'Insufficient Permission' })
@@ -73,15 +53,9 @@ export const isAutonomo = (req, res, next) => {
 }
 
 export const isContratado = (req, res, next) => {
-  const authorizedRoles = [
-    RoleEnumType.CONTRATADO,
-    RoleEnumType.ADMINISTRADOR,
-    RoleEnumType.SUPERADMIN
-  ]
-
   try {
     const { roles: userRoles } = req.user
-    if (validateRole({ userRoles, authorizedRoles })) {
+    if (validateRole({ userRoles, authorizedRoles: authorizedRoles.contratado })) {
       next()
     } else {
       return res.status(401).send({ msg: 'Insufficient Permission' })
