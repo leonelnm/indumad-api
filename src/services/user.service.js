@@ -33,15 +33,20 @@ export const createUser = async (user) => {
 
 export const findAll = async () => {
   return await User.findAll(
-    /* {
-    include: {
-      model: Role,
-      as: 'roles',
-      through: {
-        attributes: []
-      }
+    {
+      include: {
+        model: Role,
+        as: 'roles',
+        attributes: ['name'],
+        required: true,
+        through: {
+          attributes: []
+        }
+      },
+      order: [
+        ['username', 'ASC']
+      ]
     }
-    } */
   )
 }
 

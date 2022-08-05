@@ -1,6 +1,7 @@
 import express from 'express'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import config from './config/config.js'
 import handleError from './middlewares/handleError.js'
@@ -11,13 +12,17 @@ import { Environtment } from './types/roleEnumType.js'
 
 const app = express()
 
-app.use(morgan('tiny'))
+app.use(morgan('dev'))
 
-app.use(cors())
+app.use(cors({
+  credentials: true,
+  origin: true
+}))
 
 app.disable('x-powered-by')
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cookieParser())
 
 // limit repeated failed requests to auth endpoints
 if (config.env === Environtment.PRODUCTION) {

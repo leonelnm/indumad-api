@@ -20,3 +20,5 @@ jspm_packages/
 .env.test
 
 data
+
+package-lock.json

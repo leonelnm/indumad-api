@@ -49,11 +49,22 @@ export const updateUserHandler = async (req, res, next) => {
 
 export const findAllHandler = async (req, res, next) => {
   try {
-    const queryParams = req.query
-    console.log({ queryParams })
-
     const response = await findAll()
-    return res.json(response).end()
+
+    const users = response.map(user => {
+      const roles = user.roles.map(role => role.name)
+
+      return {
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        lastname: user.lastname,
+        active: user.active,
+        roles
+      }
+    })
+
+    return res.json(users).end()
   } catch (error) {
     next(error)
   }
