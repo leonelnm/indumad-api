@@ -86,7 +86,7 @@ export const findUserWithRoles = async (where = {}) => {
 
 export const findUserForLogin = async (username) => {
   return await User.findOne({
-    attributes: ['id', 'username', 'password'],
+    attributes: ['id', 'username', 'password', 'name'],
     include: {
       model: Role,
       as: 'roles',

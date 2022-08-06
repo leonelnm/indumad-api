@@ -5,10 +5,11 @@ import { findUserForLogin } from './user.service.js'
 
 const { secret, tokenExpirationMinutes: expiresIn } = config.jwt
 
-export const generateToken = ({ id, username, roles }) => {
+export const generateToken = ({ id, username, name, roles }) => {
   const payload = {
     user: {
       id,
+      name,
       username,
       roles
     }
@@ -36,6 +37,7 @@ export const login = async ({ username, password }) => {
     return {
       id: user.id,
       username: user.username,
+      name: user.name,
       roles: user.roles.map(r => r.name)
     }
   }
