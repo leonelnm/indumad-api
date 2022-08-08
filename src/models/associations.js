@@ -3,7 +3,4 @@ import { User } from './user.model.js'
 
 // Association one-to-many, rolas has multiple users and user has a role
 Role.hasMany(User)
-User.belongsTo(Role, {
-  foreignKey: 'roleId',
-  as: 'role'
-})
+User.belongsTo(Role, { as: 'role' })

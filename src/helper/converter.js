@@ -50,6 +50,7 @@ export const userdbToSimpleForm = (user) => {
     id: user.id,
     username: user.username,
     name: user.name,
+    dni: user.dni,
     lastname: user.lastname,
     active: user.active,
     role: rolesToSimpleList(user.role)
