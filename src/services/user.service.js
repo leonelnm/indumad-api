@@ -1,29 +1,22 @@
 import { Role } from '../models/role.model.js'
 import { User } from '../models/user.model.js'
-import { findRoles } from './role.service.js'
+import { findRole } from './role.service.js'
 
 export const createUser = async (user) => {
-  const rolesDB = await findRoles(user.roles)
-  console.log('Mis roles:', rolesDB.map(r => r.toJSON()))
-  if (rolesDB.length === 0) {
+  console.log('User antes de crear', user)
+  const roleDB = await findRole(user.role)
+  if (!roleDB) {
     throw new Error('No se ha encontrado ningún role válido')
   }
+  console.log('Role on db', roleDB)
 
   const userCreated = await User.create(user)
-  console.log('User creado: ', userCreated.toJSON())
-
-  for (const role of rolesDB) {
-    console.log('añadiendo: ', role.toJSON())
-    await userCreated.addRole(role)
-  }
+  await userCreated.setRole(roleDB)
 
   const { dataValues: userFull } = await User.findOne({
     include: {
       model: Role,
-      as: 'roles',
-      through: {
-        attributes: []
-      }
+      as: 'role'
     },
     where: { id: userCreated.id }
   })
@@ -36,12 +29,8 @@ export const findAll = async () => {
     {
       include: {
         model: Role,
-        as: 'roles',
-        attributes: ['name'],
-        required: true,
-        through: {
-          attributes: []
-        }
+        as: 'role',
+        attributes: ['name']
       },
       order: [
         ['username', 'ASC']
@@ -51,32 +40,20 @@ export const findAll = async () => {
 }
 
 export const findUserById = async (id) => {
-  const user = await User.findByPk(id, {
+  return await User.findByPk(id, {
     include: {
       model: Role,
-      as: 'roles',
-      attributes: ['name'],
-      required: true,
-      through: {
-        attributes: []
-      }
+      as: 'role'
     }
   })
-
-  return user
 }
 
 export const findUserWithRoles = async (where = {}) => {
-  console.log({ where })
   const user = await User.findOne({
     include: {
       model: Role,
       as: 'roles',
-      attributes: ['name'],
-      required: true,
-      through: {
-        attributes: []
-      }
+      attributes: ['name']
     },
     where
   })
@@ -89,12 +66,7 @@ export const findUserForLogin = async (username) => {
     attributes: ['id', 'username', 'password', 'name'],
     include: {
       model: Role,
-      as: 'roles',
-      attributes: ['name'],
-      required: true,
-      through: {
-        attributes: []
-      }
+      as: 'role'
     },
     where: { username, active: true }
   })

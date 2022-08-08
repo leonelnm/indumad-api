@@ -6,7 +6,7 @@ export const toNewUser = (userFromRequest) => {
     lastname: userFromRequest.lastname,
     dni: userFromRequest.dni,
     phone: userFromRequest.phone,
-    roles: userFromRequest.roles,
+    role: userFromRequest.role,
     active: true
   }
 
@@ -30,4 +30,37 @@ export const toPasswordUpdate = ({ idFromParams, dataFromRequest = {} }) => {
   updatePassword.password = dataFromRequest.password
   updatePassword.newpassword = dataFromRequest.newpassword
   return updatePassword
+}
+
+export const userdbToFullForm = (user) => {
+  return {
+    id: user.id,
+    username: user.username,
+    name: user.name,
+    lastname: user.lastname,
+    phone: user.phone,
+    active: user.active,
+    createdAt: user.createdAt,
+    role: rolesToSimpleList(user.role)
+  }
+}
+
+export const userdbToSimpleForm = (user) => {
+  return {
+    id: user.id,
+    username: user.username,
+    name: user.name,
+    lastname: user.lastname,
+    active: user.active,
+    role: rolesToSimpleList(user.role)
+  }
+}
+
+export const userdbListToForm = (userList = []) => {
+  if (!Array.isArray(userList) || userList.length === 0) return []
+  return userList.map(userdbToSimpleForm)
+}
+
+export const rolesToSimpleList = (role = {}) => {
+  return role ? role.name : ''
 }

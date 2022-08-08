@@ -1,5 +1,5 @@
 import { compareUser } from '../helper/compare.js'
-import { toNewUser, toPasswordUpdate, toUserUpdate } from '../helper/converter.js'
+import { toNewUser, toPasswordUpdate, toUserUpdate, userdbListToForm, userdbToFullForm } from '../helper/converter.js'
 import { authorizedRoles, validateRole } from '../helper/utils.js'
 import { encryptPassword, validatePassword } from '../services/auth.service.js'
 import { createUser, findAll, findUser, findUserById, findUserWithRoles } from '../services/user.service.js'
@@ -50,20 +50,7 @@ export const updateUserHandler = async (req, res, next) => {
 export const findAllHandler = async (req, res, next) => {
   try {
     const response = await findAll()
-
-    const users = response.map(user => {
-      const roles = user.roles.map(role => role.name)
-
-      return {
-        id: user.id,
-        username: user.username,
-        name: user.name,
-        lastname: user.lastname,
-        active: user.active,
-        roles
-      }
-    })
-
+    const users = userdbListToForm(response)
     return res.json(users).end()
   } catch (error) {
     next(error)
@@ -72,11 +59,11 @@ export const findAllHandler = async (req, res, next) => {
 
 export const findByIdHandler = async (req, res, next) => {
   try {
-    const response = await findUserById(req.params.id)
-    if (response === null) {
-      return res.status(404).json({ msg: 'Not found!' }).end()
+    const user = await findUserById(req.params.id)
+    if (user === null) {
+      return res.status(404).json({ msg: 'User not found' }).end()
     }
-    return res.json(response).end()
+    return res.json(userdbToFullForm(user)).end()
   } catch (error) {
     next(error)
   }

@@ -16,18 +16,6 @@ export const findOne = async (where = {}) => {
   return role
 }
 
-export const findRoles = async (roles = []) => {
-  const rolesDB = []
-
-  if (roles.length > 0) {
-    let roleDB
-    for (const role of roles) {
-      roleDB = await findOne(role)
-      if (roleDB) {
-        rolesDB.push(roleDB)
-      }
-    }
-  }
-
-  return rolesDB
+export const findRole = async (role) => {
+  return await findOne({ name: role })
 }

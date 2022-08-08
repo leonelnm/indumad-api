@@ -4,9 +4,6 @@ import { RoleEnumType, toArrayStringFromObjectType } from '../types/roleEnumType
 
 // Utils
 const roles = toArrayStringFromObjectType(RoleEnumType)
-const validateRoleItem = Joi.object({
-  name: Joi.string().valid(...roles).required()
-})
 
 // Schemas
 const userBaseSchema = Joi.object({
@@ -19,7 +16,7 @@ const userBaseSchema = Joi.object({
 const userSchema = userBaseSchema.keys({
   password: Joi.string().min(6).required(),
   dni: Joi.string().alphanum().required(),
-  roles: Joi.array().items(validateRoleItem)
+  role: Joi.string().valid(...roles).required()
 })
 
 // const userUpdateSchema = userBaseSchema.keys({})

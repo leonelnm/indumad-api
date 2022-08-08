@@ -11,12 +11,12 @@ export const expectedUserOrGestor = (req, res, next) => {
       RoleEnumType.ADMINISTRADOR,
       RoleEnumType.SUPERADMIN
     ]
-    const { id, roles: userRoles } = req.user
+    const { id, role: userRole } = req.user
 
     // Si el id del autenticado es
     // el mismo que se está enviando
     if (id === req.params.id ||
-      validateRole({ userRoles, authorizedRoles })) {
+      validateRole({ userRole, authorizedRoles })) {
       next()
     } else {
       res.status(401).send({ msg: 'Insufficient Permission' }).end()
