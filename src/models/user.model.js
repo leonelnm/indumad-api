@@ -11,13 +11,13 @@ User.init({
   username: {
     type: DataTypes.STRING(50),
     unique: {
-      msg: 'User.username duplicado'
+      msg: 'Usuario ya existe'
     },
     allowNull: false,
     validate: {
       len: {
         args: [4, 50],
-        msg: 'User.username Debe tener 5 o más caracteres'
+        msg: 'Usuario Debe tener 5 o más caracteres'
       }
     }
   },
@@ -40,7 +40,7 @@ User.init({
   dni: {
     type: DataTypes.STRING(10),
     unique: {
-      msg: 'User.dni duplicado'
+      msg: 'DNI ya existe'
     },
     allowNull: false
   },
