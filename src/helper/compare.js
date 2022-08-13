@@ -20,25 +20,18 @@ export const equalsDeep = (a, b) => {
 
 export const compareUser = (userDB = {}, userFromRequest = {}) => {
   let changes = false
-  if (userDB.username !== userFromRequest.username) {
-    userDB.username = userFromRequest.username
-    changes = true
-  }
+  const fields = ['username', 'name', 'lastname', 'phone', 'dni']
 
-  if (userDB.name !== userFromRequest.name) {
-    userDB.name = userFromRequest.name
-    changes = true
-  }
-
-  if (userDB.lastname !== userFromRequest.lastname) {
-    userDB.lastname = userFromRequest.lastname
-    changes = true
-  }
-
-  if (userDB.phone !== userFromRequest.phone) {
-    userDB.phone = userFromRequest.phone
-    changes = true
-  }
+  fields.forEach(field => {
+    if (compareValue(userDB, userFromRequest, field)) {
+      userDB[field] = userFromRequest[field]
+      changes = true
+    }
+  })
 
   return { changes, userDB }
+}
+
+const compareValue = (obj1 = {}, updatedObj = {}, tag = '') => {
+  return updatedObj.hasOwnProperty(tag) && updatedObj[tag] !== obj1[tag]
 }

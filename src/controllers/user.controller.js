@@ -1,8 +1,9 @@
 import { compareUser } from '../helper/compare.js'
-import { toNewUser, toPasswordUpdate, toUserUpdate, userdbListToForm, userdbToFullForm } from '../helper/converter.js'
-import { authorizedRoles, validateRole } from '../helper/utils.js'
+import { toNewUser, toPasswordUpdate, userdbListToForm, userdbToFullForm } from '../helper/converter.js'
+import { authorizedRoles, isGestor, validateRole } from '../helper/utils.js'
 import { encryptPassword, validatePassword } from '../services/auth.service.js'
-import { createUser, findAll, findUser, findUserById, findUserWithRoles } from '../services/user.service.js'
+import { findRole } from '../services/role.service.js'
+import { createUser, findAll, findUser, findUserById } from '../services/user.service.js'
 import { validateIdField, validatePasswordField } from '../validations/fieldValidator.js'
 import { validateUserSchema, validateUserUpdateSchema } from '../validations/userSchemaValidator.js'
 
@@ -23,25 +24,31 @@ export const createUserHandler = async (req, res, next) => {
 
 export const updateUserHandler = async (req, res, next) => {
   try {
-    // validate id
-    const { error: errorId, value: id } = validateIdField(req.params.id)
-    if (errorId) {
-      return res.status(400).json({ msg: errorId }).end()
-    }
+    const { id } = req.params
 
-    const { error, value: userFromRequest } = validateUserUpdateSchema(req.body)
+    const { error, value: userFromRequest } = validateUserUpdateSchema(req.body, isGestor({ role: req.user.role }))
     if (error) {
       return res.status(400).json({ msg: error }).end()
     }
 
-    const userUpdate = toUserUpdate(userFromRequest)
-    const userDB = await findUserWithRoles({ id })
-    const { changes, userDB: userWithChanges } = compareUser(userDB, userUpdate)
-    if (changes) {
-      userWithChanges.save()
+    const where = { id }
+    const userDB = await findUser({ where }, true)
+    const { changes, userDB: userWithChanges } = compareUser(userDB, userFromRequest)
+
+    if (userFromRequest.role) {
+      const { name: role } = userWithChanges.role.toJSON()
+      if (role !== userFromRequest.role) {
+        const roleDB = await findRole(userFromRequest.role)
+        userWithChanges.setRole(roleDB)
+        await userWithChanges.save()
+      }
     }
 
-    res.json(userWithChanges).end()
+    if (changes) {
+      await userWithChanges.save(Object.keys(userFromRequest))
+    }
+
+    res.json(userdbToFullForm(await userWithChanges.reload())).end()
   } catch (error) {
     next(error)
   }

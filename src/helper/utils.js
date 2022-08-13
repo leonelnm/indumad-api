@@ -29,3 +29,38 @@ export const authorizedRoles = {
   ],
   superAdmin: [RoleEnumType.SUPERADMIN]
 }
+
+export const isSuperAdmin = ({ role = '' }) => {
+  return validateRole({
+    userRole: role,
+    authorizedRoles: authorizedRoles.superAdmin
+  })
+}
+
+export const isAdministrador = ({ role = '' }) => {
+  return validateRole({
+    userRole: role,
+    authorizedRoles: authorizedRoles.administrador
+  })
+}
+
+export const isGestor = ({ role = '' }) => {
+  return validateRole({
+    userRole: role,
+    authorizedRoles: authorizedRoles.gestor
+  })
+}
+
+export const isAutonomo = ({ role = '' }) => {
+  return validateRole({
+    userRole: role,
+    authorizedRoles: authorizedRoles.autonomo
+  })
+}
+
+export const isContratado = ({ role = '' }) => {
+  return validateRole({
+    userRole: role,
+    authorizedRoles: authorizedRoles.contratado
+  })
+}

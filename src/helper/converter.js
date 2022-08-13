@@ -38,6 +38,7 @@ export const userdbToFullForm = (user) => {
     username: user.username,
     name: user.name,
     lastname: user.lastname,
+    dni: user.dni,
     phone: user.phone,
     active: user.active,
     createdAt: user.createdAt,

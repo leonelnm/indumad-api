@@ -4,6 +4,10 @@ import { getMsgErrorJoiValidation } from '../helper/utils.js'
 
 // Schemas
 const idSchema = Joi.number().required()
+  .messages({
+    'number.base': 'param must be number',
+    'any.required': 'param is mandatory'
+  })
 
 // Validates
 export const validateIdField = (idFromRequest = {}) => {
