@@ -32,6 +32,21 @@ export const compareUser = (userDB = {}, userFromRequest = {}) => {
   return { changes, userDB }
 }
 
+export const compare = (objectDB = {}, objectFromRequest = {}) => {
+  let changes = false
+  console.log(objectFromRequest)
+  const keys = Object.keys(objectFromRequest)
+
+  keys.forEach(key => {
+    if (compareValue(objectDB, objectFromRequest, key)) {
+      objectDB[key] = objectFromRequest[key]
+      changes = true
+    }
+  })
+
+  return { changes, objectDB }
+}
+
 const compareValue = (obj1 = {}, updatedObj = {}, tag = '') => {
-  return updatedObj.hasOwnProperty(tag) && updatedObj[tag] !== obj1[tag]
+  return Object.prototype.hasOwnProperty.call(updatedObj, tag) && updatedObj[tag] !== obj1[tag]
 }

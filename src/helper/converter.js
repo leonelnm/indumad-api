@@ -66,3 +66,16 @@ export const userdbListToForm = (userList = []) => {
 export const rolesToSimpleList = (role = {}) => {
   return role ? role.name : ''
 }
+
+// Guild
+export const toGuildUpdate = ({ dataFromRequest = {} }) => {
+  const update = {}
+  if (dataFromRequest?.name) {
+    update.name = dataFromRequest.name.toUpperCase()
+  }
+  if (dataFromRequest?.status) {
+    update.status = dataFromRequest.status
+  }
+
+  return update
+}
