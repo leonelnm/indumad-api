@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createHandler, findAllHandler, findRolesHandler } from '../controllers/role.controller..js'
+import { createHandler, findAllHandler, findRolesHandler } from '../controllers/role.controller.js'
 import { isSuperAdmin } from '../middlewares/validateRole.js'
 import validateToken from '../middlewares/validateToken.js'
 
