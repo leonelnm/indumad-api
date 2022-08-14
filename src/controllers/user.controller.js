@@ -33,6 +33,11 @@ export const updateUserHandler = async (req, res, next) => {
 
     const where = { id }
     const userDB = await findUser({ where }, true)
+
+    if (!userDB) {
+      return res.status(404).json({ msg: 'User not found' }).end()
+    }
+
     const { changes, userDB: userWithChanges } = compareUser(userDB, userFromRequest)
 
     if (userFromRequest.role) {
