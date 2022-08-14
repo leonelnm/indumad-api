@@ -4,8 +4,8 @@ import { authorizedRoles, isGestor, validateRole } from '../helper/utils.js'
 import { encryptPassword, validatePassword } from '../services/auth.service.js'
 import { findRole } from '../services/role.service.js'
 import { createUser, findAll, findUser, findUserById } from '../services/user.service.js'
-import { validateIdField, validatePasswordField } from '../validations/fieldValidator.js'
-import { validateUserSchema, validateUserUpdateSchema } from '../validations/userSchemaValidator.js'
+import { validateIdField } from '../validations/fieldValidator.js'
+import { validatePasswordField, validateUserSchema, validateUserUpdateSchema } from '../validations/userSchemaValidator.js'
 
 export const createUserHandler = async (req, res, next) => {
   try {

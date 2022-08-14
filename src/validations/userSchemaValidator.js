@@ -29,6 +29,12 @@ const userSchemaToUpdateAsGestor = userSchemaToUpdate.keys({
   role: Joi.string().valid(...roles)
 })
 
+const updatePasswordSchema = Joi.object({
+  id: Joi.number().required(),
+  password: Joi.string().min(6).required(),
+  newpassword: Joi.string().min(6).required()
+})
+
 // Validates
 export const validateUserSchema = (userFromRequest = {}) => {
   const { error, value } = schemaToCreateUser.validate(userFromRequest)
@@ -37,5 +43,10 @@ export const validateUserSchema = (userFromRequest = {}) => {
 
 export const validateUserUpdateSchema = (userFromRequest = {}, isGestor = false) => {
   const { error, value } = isGestor ? userSchemaToUpdateAsGestor.validate(userFromRequest) : userSchemaToUpdate.validate(userFromRequest)
+  return { error: getMsgErrorJoiValidation(error), value }
+}
+
+export const validatePasswordField = (updatePasswordFromRequest = {}) => {
+  const { error, value } = updatePasswordSchema.validate(updatePasswordFromRequest)
   return { error: getMsgErrorJoiValidation(error), value }
 }
