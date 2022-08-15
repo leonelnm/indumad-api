@@ -67,8 +67,8 @@ export const rolesToSimpleList = (role = {}) => {
   return role ? role.name : ''
 }
 
-// Guild
-export const toGuildUpdate = ({ dataFromRequest = {} }) => {
+// Guild or Reference
+export const toGuildOrReferencedUpdate = ({ dataFromRequest = {} }) => {
   const update = {}
   if (dataFromRequest?.name) {
     update.name = dataFromRequest.name.toUpperCase()

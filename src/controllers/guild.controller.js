@@ -1,5 +1,5 @@
 import { compare } from '../helper/compare.js'
-import { toGuildUpdate } from '../helper/converter.js'
+import { toGuildOrReferencedUpdate } from '../helper/converter.js'
 import { createGuild, deleteGuild, findAll, findGuild } from '../services/guild.service.js'
 import { validateGuildSchemaOnCreate, validateGuildSchemaOnUpdate, validateNameParemeter } from '../validations/guildSchemaValidator.js'
 
@@ -49,7 +49,7 @@ export const updateHandler = async (req, res, next) => {
       return res.status(404).json({ msg: `Guild: ${name} not found` }).end()
     }
 
-    const { changes, objectDB: guildToUpdate } = compare(guildDB, toGuildUpdate({ dataFromRequest }))
+    const { changes, objectDB: guildToUpdate } = compare(guildDB, toGuildOrReferencedUpdate({ dataFromRequest }))
 
     if (changes) {
       await guildToUpdate.save(Object.keys(dataFromRequest))

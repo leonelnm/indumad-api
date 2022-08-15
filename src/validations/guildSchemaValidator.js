@@ -5,7 +5,7 @@ import { getMsgErrorJoiValidation } from '../helper/utils.js'
 const guildSchemaToCreate = Joi.object({
   name: Joi.string()
     .min(3)
-    .max(15)
+    .max(30)
     .required()
     .messages({
       'string.base': 'name, debe ser un string',
@@ -20,7 +20,7 @@ const guildSchemaToCreate = Joi.object({
 const guildSchemaToUpdate = Joi.object({
   name: Joi.string()
     .min(3)
-    .max(15)
+    .max(30)
     .messages({
       'string.base': 'name, debe ser un string',
       'string.empty': 'name, no puede ser un campo vacío',
@@ -34,7 +34,7 @@ const guildSchemaToUpdate = Joi.object({
 const nameParameterSchema = Joi.string()
   .trim()
   .min(3)
-  .max(15)
+  .max(30)
   .required()
 
 export const validateNameParemeter = (name) => {

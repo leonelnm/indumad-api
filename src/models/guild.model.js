@@ -11,7 +11,7 @@ Guild.init({
     primaryKey: true
   },
   name: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(30),
     unique: {
       msg: 'Guild.name duplicate'
     },
