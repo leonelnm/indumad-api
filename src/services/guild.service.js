@@ -6,7 +6,10 @@ export const createGuild = async (name) => {
 
 export const findAll = async (where = {}) => {
   return await Guild.findAll({
-    where
+    where,
+    order: [
+      ['name', 'ASC']
+    ]
   })
 }
 
