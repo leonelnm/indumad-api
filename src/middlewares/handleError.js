@@ -1,16 +1,18 @@
 const controlledExceptions = [
   'SequelizeValidationError',
-  'SequelizeUniqueConstraintError'
+  'SequelizeUniqueConstraintError',
+  'ValidationError'
 ]
 
 export default (error, _req, res, _next) => {
-  console.log('Is error instance', error instanceof Error)
   console.log('Name', error.name)
-  console.log('Message', error.name)
+  console.log('Message', error.message)
 
-  if (error instanceof Error &&
+  if ((error instanceof Error) &&
     controlledExceptions.includes(error.name)) {
-    res.status(400).send({
+    const code = error.code || 400
+
+    res.status(code).send({
       error: error.message
     })
   } else {
