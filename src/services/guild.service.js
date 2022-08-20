@@ -13,10 +13,10 @@ export const findAll = async (where = {}) => {
   })
 }
 
-export const findGuild = async (name) => {
+export const findGuild = async (where = {}) => {
   return await Guild.findOne({
     // attributes: ['id', 'name'],
-    where: { name }
+    where
   })
 }
 

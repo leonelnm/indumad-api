@@ -44,7 +44,7 @@ export const updateHandler = async (req, res, next) => {
       return res.status(400).json({ msg: error }).end()
     }
 
-    const guildDB = await findGuild(name)
+    const guildDB = await findGuild({ name })
     if (!guildDB) {
       return res.status(404).json({ msg: `Guild: ${name} not found` }).end()
     }
