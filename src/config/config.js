@@ -28,6 +28,9 @@ const envVarsSchema = Joi.object().keys({
   // Bcrypt
   SALT_ROUNDS: Joi.number().default(10),
 
+  // SuperAdmin
+  SUPERADMIN_PASSWORD: Joi.string(),
+
   // Rate limit
   RATE_LIMIT_LOGIN_ERROR_ATTEMPTS: Joi.number().default(20),
   RATE_LIMIT_LOGIN_TIME_LOCK_MINUTES: Joi.number().default(15)
@@ -61,5 +64,6 @@ export default {
       lockMinutes: envVars.RATE_LIMIT_LOGIN_TIME_LOCK_MINUTES
     }
   },
-  saltRound: envVars.SALT_ROUNDS
+  saltRound: envVars.SALT_ROUNDS,
+  superadminPassword: envVars.SUPERADMIN_PASSWORD
 }
