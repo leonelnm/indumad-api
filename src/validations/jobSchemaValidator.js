@@ -1,6 +1,5 @@
 import Joi from 'joi'
 import { getMsgErrorJoiValidation } from '../helper/utils.js'
-import { JobStateTypeAsList } from '../types/jobStateEnumType.js'
 import { PriorityTypeAsList } from '../types/levelEnumType.js'
 import { schemaToCreateClient } from './clientSchemaValidator.js'
 import { schemaToCreateContact } from './contactSchemaValidator.js'
@@ -13,11 +12,9 @@ const schemaToCreateJob = Joi.object({
   iva: Joi.number().min(1),
   employee: Joi.number(),
   client: schemaToCreateClient.required(),
-  contact: schemaToCreateContact.required()
-})
-
-const schemaToUpdateJobState = Joi.object({
-  state: Joi.string().valid(...JobStateTypeAsList)
+  contact: schemaToCreateContact.required(),
+  reference: Joi.number().required(),
+  guild: Joi.number().required()
 })
 
 // Validates

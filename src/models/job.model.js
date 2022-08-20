@@ -4,6 +4,8 @@ import { JobStateType, JobStateTypeAsList } from '../types/jobStateEnumType.js'
 import { PriorityType, PriorityTypeAsList } from '../types/levelEnumType.js'
 import { Client } from './client.model.js'
 import { Contact } from './contact.model.js'
+import { Guild } from './guild.model.js'
+import { Reference } from './reference.model.js'
 import { User } from './user.model.js'
 
 export class Job extends Model { }
@@ -75,14 +77,20 @@ Job.init({
   sequelize: dbInstance,
   defaultScope: {
     attributes: {
-      exclude: ['ContactId', 'contactId', 'ClientId', 'clientId', 'UserId', 'employeeId']
+      exclude: [
+        'ContactId', 'contactId',
+        'ClientId', 'clientId',
+        'UserId', 'employeeId',
+        'ReferenceId', 'referenceId',
+        'GuildId', 'guildId'
+      ]
     },
-    include: [{
-      model: Client, as: 'client'
-    }, {
-      model: Contact, as: 'contact'
-    }, {
-      model: User, as: 'employee'
-    }]
+    include: [
+      { model: Client, as: 'client' },
+      { model: Contact, as: 'contact' },
+      { model: User, as: 'employee' },
+      { model: Guild, as: 'guild' },
+      { model: Reference, as: 'reference' }
+    ]
   }
 })

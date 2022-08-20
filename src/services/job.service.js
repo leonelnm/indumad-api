@@ -1,8 +1,12 @@
 import { ValidationError } from '../exceptions/ValidationError.js'
 import { Client } from '../models/client.model.js'
 import { Contact } from '../models/contact.model.js'
+import { Guild } from '../models/guild.model.js'
 import { Job } from '../models/job.model.js'
+import { Reference } from '../models/reference.model.js'
 import { User } from '../models/user.model.js'
+import { findGuild } from './guild.service.js'
+import { findReference } from './reference.service.js'
 // import { findClient } from './client.service.js'
 import { findUserById } from './user.service.js'
 
@@ -28,7 +32,7 @@ export const findAll = async () => {
   )
 }
 
-export const createJob = async ({ client = null, employee = null, ...job }) => {
+export const createJob = async ({ client = null, employee = null, reference = null, guild = null, ...job }) => {
   const includes = [
     { model: Contact, as: 'contact' },
     { model: Client, as: 'client' }
@@ -52,6 +56,24 @@ export const createJob = async ({ client = null, employee = null, ...job }) => {
   //   job.client = client
   // }
   job.client = client
+
+  if (reference) {
+    const referenceDB = await findReference({ id: reference })
+    if (!referenceDB) {
+      throw new ValidationError(404, `reference id:[${reference}] not found!`)
+    }
+    job.referenceId = referenceDB.id
+    includes.push({ model: Reference, as: 'reference' })
+  }
+
+  if (guild) {
+    const guildDB = await findGuild({ id: guild })
+    if (!guildDB) {
+      throw new ValidationError(404, `guild id:[${guild}] not found!`)
+    }
+    job.guildId = guildDB.id
+    includes.push({ model: Guild, as: 'guild' })
+  }
 
   return await Job.create(job, {
     include: includes

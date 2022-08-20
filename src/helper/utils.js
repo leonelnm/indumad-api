@@ -64,3 +64,9 @@ export const isContratado = ({ role = '' }) => {
     authorizedRoles: authorizedRoles.contratado
   })
 }
+
+export const removeNullValuesFromObject = (obj) => {
+  const copy = { ...obj }
+  Object.keys(copy).forEach((k) => copy[k] === null && delete copy[k])
+  return copy
+}
