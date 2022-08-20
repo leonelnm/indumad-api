@@ -7,7 +7,8 @@ export const toNewUser = (userFromRequest) => {
     dni: userFromRequest.dni,
     phone: userFromRequest.phone,
     role: userFromRequest.role,
-    active: true
+    active: true,
+    guilds: userFromRequest.guilds
   }
 
   return newUser
@@ -42,7 +43,8 @@ export const userdbToFullForm = (user) => {
     phone: user.phone,
     active: user.active,
     createdAt: user.createdAt,
-    role: rolesToSimpleList(user.role)
+    role: rolesToSimpleList(user.role),
+    guilds: user.guilds
   }
 }
 
@@ -54,7 +56,8 @@ export const userdbToSimpleForm = (user) => {
     dni: user.dni,
     lastname: user.lastname,
     active: user.active,
-    role: rolesToSimpleList(user.role)
+    role: rolesToSimpleList(user.role),
+    guilds: user.guilds
   }
 }
 
@@ -73,7 +76,7 @@ export const toGuildOrReferencedUpdate = ({ dataFromRequest = {} }) => {
   if (dataFromRequest?.name) {
     update.name = dataFromRequest.name.toUpperCase()
   }
-  if (dataFromRequest?.status) {
+  if ('status' in dataFromRequest) {
     update.status = dataFromRequest.status
   }
 
