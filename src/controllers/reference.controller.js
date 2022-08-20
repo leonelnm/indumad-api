@@ -43,7 +43,7 @@ export const updateHandler = async (req, res, next) => {
       return res.status(400).json({ msg: error }).end()
     }
 
-    const referenceDB = await findReference(name)
+    const referenceDB = await findReference({ name })
     if (!referenceDB) {
       return res.status(404).json({ msg: `Reference: ${name} not found` }).end()
     }

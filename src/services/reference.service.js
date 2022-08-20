@@ -13,10 +13,10 @@ export const findAll = async (where = {}) => {
   })
 }
 
-export const findReference = async (name) => {
+export const findReference = async (where = {}) => {
   return await Reference.findOne({
     // attributes: ['id', 'name'],
-    where: { name }
+    where
   })
 }
 
