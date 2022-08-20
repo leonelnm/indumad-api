@@ -13,7 +13,8 @@ const schemaToCreateUser = Joi.object({
   phone: Joi.string().min(5).alphanum().required(),
   password: Joi.string().min(6).required(),
   dni: Joi.string().alphanum().required(),
-  role: Joi.string().valid(...roles).required()
+  role: Joi.string().valid(...roles).required(),
+  guilds: Joi.array().items(Joi.number())
 })
 
 const userSchemaToUpdate = Joi.object({
