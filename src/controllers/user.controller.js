@@ -61,7 +61,9 @@ export const updateUserHandler = async (req, res, next) => {
 
 export const findAllHandler = async (req, res, next) => {
   try {
-    const response = await findAll()
+    const { guild, guildStatus } = req.query
+
+    const response = await findAll(guild, guildStatus)
     const users = userdbListToForm(response)
     return res.json(users).end()
   } catch (error) {
@@ -71,7 +73,9 @@ export const findAllHandler = async (req, res, next) => {
 
 export const findByIdHandler = async (req, res, next) => {
   try {
-    const user = await findUserById(req.params.id)
+    const { guild, guildStatus } = req.query
+
+    const user = await findUserById(req.params.id, guild, guildStatus)
     if (user === null) {
       return res.status(404).json({ msg: 'User not found' }).end()
     }

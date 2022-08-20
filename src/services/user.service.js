@@ -1,48 +1,76 @@
+import { Guild } from '../models/guild.model.js'
 import { Role } from '../models/role.model.js'
 import { User } from '../models/user.model.js'
 import { findRole } from './role.service.js'
+import { findAll as findAllGuilds } from './guild.service.js'
+import { ValidationError } from '../exceptions/ValidationError.js'
 
-export const createUser = async (user) => {
-  const roleDB = await findRole(user.role)
+export const createUser = async ({ role, guilds = [], ...user }) => {
+  // Valida ROLE
+  const roleDB = await findRole(role)
   if (!roleDB) {
-    throw new Error('No se ha encontrado ningún role válido')
+    throw new ValidationError(400, `Role ${role} not found`)
   }
+  user.roleId = roleDB.id
 
-  const userCreated = await User.create(user)
-  await userCreated.setRole(roleDB)
-
-  const { dataValues: userFull } = await User.findOne({
-    include: {
-      model: Role,
-      as: 'role'
-    },
-    where: { id: userCreated.id }
+  const userCreatedDB = await User.create(user, {
+    include: [
+      { model: Role, as: 'role' }
+    ]
   })
 
-  return userFull
-}
-
-export const findAll = async () => {
-  return await User.findAll(
-    {
-      include: {
-        model: Role,
-        as: 'role',
-        attributes: ['name']
-      },
-      order: [
-        ['username', 'ASC']
-      ]
+  // valida Guilds
+  if (guilds.length > 0) {
+    const guildsDB = await findAllGuilds({ id: guilds })
+    if (guilds.length !== guildsDB.length) {
+      throw new ValidationError(400, `Invalid Guild, check guilds: [${guilds}]`)
     }
-  )
+
+    await userCreatedDB.setGuilds(guildsDB)
+
+    return await userCreatedDB.reload()
+  }
+
+  return { msg: 'userCreated' }
 }
 
-export const findUserById = async (id) => {
+export const findAll = async (includeGuilds = false, guildStatus = undefined) => {
+  const includes = [{ model: Role, as: 'role' }]
+
+  if (includeGuilds) {
+    includes.push(
+      {
+        model: Guild,
+        as: 'guilds',
+        through: {
+          attributes: []
+        },
+        where: guildStatus !== undefined ? { status: guildStatus } : {}
+      }
+    )
+  }
+
+  return await User.findAll({ include: includes })
+}
+
+export const findUserById = async (id, includeGuilds = false, guildStatus = undefined) => {
+  const includes = [{ model: Role, as: 'role' }]
+
+  if (includeGuilds) {
+    includes.push(
+      {
+        model: Guild,
+        as: 'guilds',
+        through: {
+          attributes: []
+        },
+        where: guildStatus !== undefined ? { status: guildStatus } : {}
+      }
+    )
+  }
+
   return await User.findByPk(id, {
-    include: {
-      model: Role,
-      as: 'role'
-    }
+    include: includes
   })
 }
 
