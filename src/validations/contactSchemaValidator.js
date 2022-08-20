@@ -3,15 +3,15 @@ import { getMsgErrorJoiValidation } from '../helper/utils.js'
 
 // Schemas
 export const schemaToCreateContact = Joi.object({
-  name: Joi.string().min(3).required(),
-  address: Joi.string().min(4).required(),
-  phone: Joi.string().min(5).alphanum().required()
+  name: Joi.string().min(3).max(80).required(),
+  address: Joi.string().min(4).max(100).required(),
+  phone: Joi.string().min(5).max(15).alphanum().required()
 })
 
 const schemaToUpdateContact = Joi.object({
-  name: Joi.string().min(3),
-  address: Joi.string().min(4),
-  phone: Joi.string().min(5).alphanum()
+  name: Joi.string().min(3).max(80),
+  address: Joi.string().min(4).max(100),
+  phone: Joi.string().min(5).alphanum().max(15)
 })
 
 // Validates
