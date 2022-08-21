@@ -6,7 +6,7 @@ import { schemaToCreateContact } from './contactSchemaValidator.js'
 
 // Schemas
 const schemaToCreateJob = Joi.object({
-  extReference: Joi.string().trim().max(50),
+  extReference: Joi.string().allow('').trim().max(50),
   incidentInfo: Joi.string().trim().max(4000).required(),
   priority: Joi.string().valid(...PriorityTypeAsList),
   iva: Joi.number().min(1),

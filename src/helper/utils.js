@@ -70,3 +70,17 @@ export const removeNullValuesFromObject = (obj) => {
   Object.keys(copy).forEach((k) => copy[k] === null && delete copy[k])
   return copy
 }
+
+export const removeEmptyValuesFromObject = (obj) => {
+  const copy = { ...obj }
+  Object.keys(copy).forEach((k) => {
+    if (typeof copy[k] === 'string') {
+      copy[k] = copy[k].trim()
+    }
+    if (typeof copy[k] === 'object') {
+      copy[k] = removeEmptyValuesFromObject(copy[k])
+    }
+    (copy[k] === null || copy[k] === '') && delete copy[k]
+  })
+  return copy
+}

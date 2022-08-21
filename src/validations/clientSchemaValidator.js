@@ -3,7 +3,7 @@ import { getMsgErrorJoiValidation } from '../helper/utils.js'
 
 // Schemas
 export const schemaToCreateClient = Joi.object({
-  nif: Joi.string().min(3).max(25).trim(),
+  nif: Joi.string().allow('').min(3).max(25).trim(),
   name: Joi.string().min(3).max(100).required().trim(),
   phone: Joi.string().min(5).max(15).alphanum().required().trim()
 })
