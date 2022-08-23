@@ -4,7 +4,7 @@ import { authorizedRoles, isGestor, validateRole } from '../helper/utils.js'
 import { encryptPassword, validatePassword } from '../services/auth.service.js'
 import { findRole } from '../services/role.service.js'
 import { createUser, findAll, findUser, findUserById } from '../services/user.service.js'
-import { validateIdField } from '../validations/fieldValidator.js'
+import { validateIdField, validateFieldNumber, ParamType } from '../validations/fieldValidator.js'
 import { validatePasswordField, validateUserSchema, validateUserUpdateSchema } from '../validations/userSchemaValidator.js'
 
 export const createUserHandler = async (req, res, next) => {
@@ -59,11 +59,58 @@ export const updateUserHandler = async (req, res, next) => {
   }
 }
 
+/*
+ * QueryParams: {
+ *  guild: boolean,
+ *  guildStatus: boolean, //to use guildStatus must be use guild
+ *  status: boolean,
+ *  order: ['ASC', 'DESC']
+ * }
+ */
 export const findAllHandler = async (req, res, next) => {
   try {
-    const { guild, guildStatus } = req.query
+    const { guild, guildStatus, status, order } = req.query
 
-    const response = await findAll(guild, guildStatus)
+    // Param JOB: {status, order}
+    if (status) {
+      const { error } = validateFieldNumber(ParamType.boolean, 'status', status)
+      if (error) {
+        return res.status(400).json({ msg: error }).end()
+      }
+    }
+
+    if (order) {
+      const { error } = validateFieldNumber(ParamType.order, 'order', order)
+      if (error) {
+        return res.status(400).json({ msg: error }).end()
+      }
+    }
+
+    // Param GUILD: {guild, guildStatus}
+    if (guild) {
+      const { error } = validateFieldNumber(ParamType.boolean, 'guild', guild)
+      if (error) {
+        return res.status(400).json({ msg: error }).end()
+      }
+    }
+    if (guildStatus) {
+      const { error } = validateFieldNumber(ParamType.boolean, 'guildStatus', guildStatus)
+      if (error) {
+        return res.status(400).json({ msg: error }).end()
+      }
+    }
+
+    const guildQuery = {
+      include: guild,
+      status: guildStatus
+    }
+
+    const jobQuery = {
+      status,
+      order
+    }
+
+    const response = await findAll({ jobQuery, guildQuery })
     const users = userdbListToForm(response)
     return res.json(users).end()
   } catch (error) {

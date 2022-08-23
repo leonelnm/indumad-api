@@ -34,10 +34,10 @@ export const createUser = async ({ role, guilds = [], ...user }) => {
   return { msg: 'userCreated' }
 }
 
-export const findAll = async (includeGuilds = false, guildStatus = undefined) => {
+export const findAll = async ({ jobQuery = {}, guildQuery = {} }) => {
   const includes = [{ model: Role, as: 'role' }]
 
-  if (includeGuilds) {
+  if (guildQuery.include) {
     includes.push(
       {
         model: Guild,
@@ -45,12 +45,21 @@ export const findAll = async (includeGuilds = false, guildStatus = undefined) =>
         through: {
           attributes: []
         },
-        where: guildStatus !== undefined ? { status: guildStatus } : {}
+        where: guildQuery.status !== undefined ? { status: guildQuery.status } : {}
       }
     )
   }
 
-  return await User.findAll({ include: includes })
+  const order = []
+  if (jobQuery.order) {
+    order.push(['username', jobQuery.order])
+  }
+
+  return await User.findAll({
+    include: includes,
+    where: jobQuery.status !== undefined ? { active: jobQuery.status } : {},
+    order
+  })
 }
 
 export const findUserById = async (id, includeGuilds = false, guildStatus = undefined) => {
