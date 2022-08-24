@@ -1,8 +1,9 @@
+import { Op } from 'sequelize'
 import { Guild } from '../models/guild.model.js'
 import { Role } from '../models/role.model.js'
 import { User } from '../models/user.model.js'
 import { findRole } from './role.service.js'
-import { findAll as findAllGuilds } from './guild.service.js'
+import { findAll as findAllGuilds, findGuild } from './guild.service.js'
 import { ValidationError } from '../exceptions/ValidationError.js'
 
 export const createUser = async ({ role, guilds = [], ...user }) => {
@@ -34,7 +35,7 @@ export const createUser = async ({ role, guilds = [], ...user }) => {
   return { msg: 'userCreated' }
 }
 
-export const findAll = async ({ jobQuery = {}, guildQuery = {} }) => {
+export const findAll = async ({ userQuery = {}, guildQuery = {} }) => {
   const includes = [{ model: Role, as: 'role' }]
 
   if (guildQuery.include) {
@@ -51,14 +52,35 @@ export const findAll = async ({ jobQuery = {}, guildQuery = {} }) => {
   }
 
   const order = []
-  if (jobQuery.order) {
-    order.push(['username', jobQuery.order])
+  if (userQuery.order) {
+    order.push(['username', userQuery.order])
   }
 
   return await User.findAll({
     include: includes,
-    where: jobQuery.status !== undefined ? { active: jobQuery.status } : {},
+    where: userQuery.status !== undefined ? { active: userQuery.status } : {},
     order
+  })
+}
+
+export const findAllByGuild = async ({ guildQuery = {} }) => {
+  if (!await findGuild({ id: guildQuery.id })) {
+    throw new ValidationError(404, `Guild ${guildQuery.id} not found`)
+  }
+
+  return await User.findAll({
+    include: {
+      model: Guild,
+      as: 'guilds',
+      through: {
+        attributes: []
+      },
+      where: {
+        [Op.and]: [{ status: true }, { id: guildQuery.id }]
+      }
+    },
+    where: { active: true },
+    order: [['username', 'ASC']]
   })
 }
 

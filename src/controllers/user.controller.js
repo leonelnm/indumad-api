@@ -3,7 +3,7 @@ import { toNewUser, toPasswordUpdate, userdbListToForm, userdbToFullForm } from 
 import { authorizedRoles, isGestor, validateRole } from '../helper/utils.js'
 import { encryptPassword, validatePassword } from '../services/auth.service.js'
 import { findRole } from '../services/role.service.js'
-import { createUser, findAll, findUser, findUserById } from '../services/user.service.js'
+import { createUser, findAll, findAllByGuild, findUser, findUserById } from '../services/user.service.js'
 import { validateIdField, validateFieldNumber, ParamType } from '../validations/fieldValidator.js'
 import { validatePasswordField, validateUserSchema, validateUserUpdateSchema } from '../validations/userSchemaValidator.js'
 
@@ -71,7 +71,7 @@ export const findAllHandler = async (req, res, next) => {
   try {
     const { guild, guildStatus, status, order } = req.query
 
-    // Param JOB: {status, order}
+    // Param USER: {status, order}
     if (status) {
       const { error } = validateFieldNumber(ParamType.boolean, 'status', status)
       if (error) {
@@ -105,14 +105,33 @@ export const findAllHandler = async (req, res, next) => {
       status: guildStatus
     }
 
-    const jobQuery = {
+    const userQuery = {
       status,
       order
     }
 
-    const response = await findAll({ jobQuery, guildQuery })
+    const response = await findAll({ userQuery, guildQuery })
     const users = userdbListToForm(response)
     return res.json(users).end()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const findAllByGuildIdHandler = async (req, res, next) => {
+  try {
+    const { guildId } = req.params
+    const { error } = validateFieldNumber(ParamType.number, guildId, guildId, true)
+    if (error) {
+      return res.status(400).json({ msg: error }).end()
+    }
+
+    const guildQuery = {
+      id: guildId
+    }
+
+    const response = await findAllByGuild({ guildQuery })
+    return res.json(response).end()
   } catch (error) {
     next(error)
   }
