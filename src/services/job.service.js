@@ -79,3 +79,15 @@ export const createJob = async ({ client = null, employee = null, reference = nu
     include: includes
   })
 }
+
+export const findJob = async (where = {}) => {
+  return await Job.findOne({
+    include: [
+      { model: Contact, as: 'contact' },
+      { model: Client, as: 'client' },
+      { model: Guild, as: 'guild' },
+      { model: Reference, as: 'reference' }
+    ],
+    where
+  })
+}

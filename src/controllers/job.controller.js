@@ -1,5 +1,5 @@
 import { removeEmptyValuesFromObject, removeNullValuesFromObject } from '../helper/utils.js'
-import { createJob, findAll } from '../services/job.service.js'
+import { createJob, findAll, findJob } from '../services/job.service.js'
 import { validateJobToCreate } from '../validations/jobSchemaValidator.js'
 
 export const findAllHandler = async (req, res, next) => {
@@ -21,6 +21,16 @@ export const createHandler = async (req, res, next) => {
 
     const jobDB = await createJob(jobFromRequest)
     return res.status(201).json(removeNullValuesFromObject(jobDB.toJSON())).end()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const findJobHandler = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const response = await findJob({ id })
+    return res.json(response).end()
   } catch (error) {
     next(error)
   }
