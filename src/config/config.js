@@ -24,6 +24,7 @@ const envVarsSchema = Joi.object().keys({
   POSTGRES_PASSWORD: Joi.string().required(),
   POSTGRES_LOGGING: Joi.boolean().default(false),
   POSTGRES_DIALECT: Joi.string().default('postgres'),
+  POSTGRES_SSL: Joi.boolean().default(false),
 
   // Bcrypt
   SALT_ROUNDS: Joi.number().default(10),
@@ -56,7 +57,13 @@ export default {
     username: envVars.POSTGRES_USER,
     password: envVars.POSTGRES_PASSWORD,
     dialect: envVars.POSTGRES_DIALECT,
-    logging: envVars.POSTGRES_LOGGING
+    logging: envVars.POSTGRES_LOGGING,
+    dialectOptions: {
+      ssl: {
+        require: envVars.POSTGRES_SSL,
+        rejectUnauthorized: false
+      }
+    }
   },
   rateLimiter: {
     loginRateLimite: {
