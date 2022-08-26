@@ -27,7 +27,8 @@ const userSchemaToUpdate = Joi.object({
 const userSchemaToUpdateAsGestor = userSchemaToUpdate.keys({
   dni: Joi.string().alphanum(),
   active: Joi.boolean(),
-  role: Joi.string().valid(...roles)
+  role: Joi.string().valid(...roles),
+  guilds: Joi.array().items(Joi.number())
 })
 
 const updatePasswordSchema = Joi.object({

@@ -4,8 +4,10 @@ import { authorizedRoles, isGestor, validateRole } from '../helper/utils.js'
 import { encryptPassword, validatePassword } from '../services/auth.service.js'
 import { findRole } from '../services/role.service.js'
 import { createUser, findAll, findAllByGuild, findUser, findUserById } from '../services/user.service.js'
+import { findAll as findAllGuilds } from '../services/guild.service.js'
 import { validateIdField, validateFieldNumber, ParamType } from '../validations/fieldValidator.js'
 import { validatePasswordField, validateUserSchema, validateUserUpdateSchema } from '../validations/userSchemaValidator.js'
+import { ValidationError } from '../exceptions/ValidationError.js'
 
 export const createUserHandler = async (req, res, next) => {
   try {
@@ -30,26 +32,43 @@ export const updateUserHandler = async (req, res, next) => {
     if (error) {
       return res.status(400).json({ msg: error }).end()
     }
+    console.log({ userFromRequest })
 
     const where = { id }
-    const userDB = await findUser({ where }, true)
+    const userDB = await findUser({ where }, true, userFromRequest.guilds !== undefined)
 
     if (!userDB) {
       return res.status(404).json({ msg: 'User not found' }).end()
     }
 
     const { changes, userDB: userWithChanges } = compareUser(userDB, userFromRequest)
-
+    let saveBefore = false
     if (userFromRequest.role) {
       const { name: role } = userWithChanges.role.toJSON()
       if (role !== userFromRequest.role) {
         const roleDB = await findRole(userFromRequest.role)
         userWithChanges.setRole(roleDB)
         await userWithChanges.save()
+        saveBefore = true
       }
     }
 
-    if (changes) {
+    if (userFromRequest.guilds !== undefined) {
+      const guildIds = userDB.guilds.map(g => g.id)
+      const guildsReq = userFromRequest.guilds
+
+      if (guildIds.length !== guildsReq.length ||
+        JSON.stringify(guildIds.sort()) !== JSON.stringify(guildsReq.sort())) {
+        console.log('STEP - RUN save guilds')
+        const guildsDB = await findAllGuilds({ id: guildsReq })
+        if (guildsReq.length !== guildsDB.length) {
+          throw new ValidationError(400, `Invalid Guild, check guilds: [${guildsReq}]`)
+        }
+        await userWithChanges.setGuilds(guildsDB)
+      }
+    }
+
+    if (changes && !saveBefore) {
       await userWithChanges.save(Object.keys(userFromRequest))
     }
 
@@ -140,6 +159,19 @@ export const findAllByGuildIdHandler = async (req, res, next) => {
 export const findByIdHandler = async (req, res, next) => {
   try {
     const { guild, guildStatus } = req.query
+
+    if (guild) {
+      const { error } = validateFieldNumber(ParamType.boolean, 'guild', guild)
+      if (error) {
+        return res.status(400).json({ msg: error }).end()
+      }
+    }
+    if (guildStatus) {
+      const { error } = validateFieldNumber(ParamType.boolean, 'guildStatus', guildStatus)
+      if (error) {
+        return res.status(400).json({ msg: error }).end()
+      }
+    }
 
     const user = await findUserById(req.params.id, guild, guildStatus)
     if (user === null) {

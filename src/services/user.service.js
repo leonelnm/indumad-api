@@ -100,9 +100,24 @@ export const findUserById = async (id, includeGuilds = false, guildStatus = unde
     )
   }
 
-  return await User.findByPk(id, {
+  let userDB = await User.findByPk(id, {
     include: includes
   })
+
+  if (userDB) {
+    return userDB
+  }
+
+  if (guildStatus) {
+    return null
+  }
+
+  userDB = await User.findByPk(id, { include: { model: Role, as: 'role' } })
+  if (includeGuilds) {
+    userDB.guilds = []
+  }
+
+  return userDB
 }
 
 export const findUserWithRoles = async (where = {}) => {
@@ -129,13 +144,29 @@ export const findUserForLogin = async (username) => {
   })
 }
 
-export const findUser = async (options, includeRoles = false) => {
+export const findUser = async (options, includeRoles = false, includeGuilds = false) => {
+  const includes = []
   if (includeRoles) {
-    options.include = {
+    includes.push({
       model: Role,
       as: 'role',
       attributes: ['name']
-    }
+    })
+  }
+
+  if (includeGuilds) {
+    includes.push({
+      model: Guild,
+      as: 'guilds',
+      attributes: ['id'],
+      through: {
+        attributes: []
+      }
+    })
+  }
+
+  if (includeRoles || includeGuilds) {
+    options.include = includes
   }
 
   return await User.findOne(options)
