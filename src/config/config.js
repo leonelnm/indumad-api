@@ -58,12 +58,14 @@ export default {
     password: envVars.POSTGRES_PASSWORD,
     dialect: envVars.POSTGRES_DIALECT,
     logging: envVars.POSTGRES_LOGGING,
-    dialectOptions: {
-      ssl: {
-        require: envVars.POSTGRES_SSL,
-        rejectUnauthorized: false
-      }
-    }
+    dialectOptions: envVars.NODE_ENV !== Environtment.PRODUCTION
+      ? {}
+      : {
+          ssl: {
+            require: envVars.POSTGRES_SSL,
+            rejectUnauthorized: false
+          }
+        }
   },
   rateLimiter: {
     loginRateLimite: {

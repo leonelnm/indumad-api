@@ -1,6 +1,6 @@
 export const toNewUser = (userFromRequest) => {
   const newUser = {
-    username: userFromRequest.username,
+    username: userFromRequest.username.toLowerCase(),
     password: userFromRequest.password,
     name: userFromRequest.name,
     lastname: userFromRequest.lastname,

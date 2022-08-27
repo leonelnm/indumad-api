@@ -11,25 +11,9 @@ import { findReference } from './reference.service.js'
 import { findUserById } from './user.service.js'
 
 export const findAll = async () => {
-  return await Job.findAll(
-  //   {
-  //   include: [
-  //     {
-  //       model: Client,
-  //       attributes: ['nif', 'name', 'phone']
-  //     },
-  //     {
-  //       model: Contact,
-  //       attributes: ['name', 'address', 'phone']
-  //     },
-  //     {
-  //       model: User,
-  //       as: 'employee',
-  //       attributes: ['id', 'username', 'name', 'lastname', 'dni', 'phone']
-  //     }
-  //   ]
-  // }
-  )
+  return await Job.findAll({
+    order: [['createdAt', 'DESC']]
+  })
 }
 
 export const createJob = async ({ client = null, employee = null, reference = null, guild = null, ...job }) => {
