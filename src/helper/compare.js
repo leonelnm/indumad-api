@@ -32,9 +32,24 @@ export const compareUser = (userDB = {}, userFromRequest = {}) => {
   return { changes, userDB }
 }
 
+export const compareJob = (jobDB = {}, jobFromRequest = {}) => {
+  let changes = false
+  const keys = ['extReference', 'incidentInfo', 'iva', 'priority', 'state']
+  const fields = []
+
+  keys.forEach(key => {
+    if (compareValue(jobDB, jobFromRequest, key)) {
+      jobDB[key] = jobFromRequest[key]
+      changes = true
+      fields.push(key)
+    }
+  })
+
+  return { changes, jobDB, fields }
+}
+
 export const compare = (objectDB = {}, objectFromRequest = {}) => {
   let changes = false
-  console.log(objectFromRequest)
   const keys = Object.keys(objectFromRequest)
 
   keys.forEach(key => {

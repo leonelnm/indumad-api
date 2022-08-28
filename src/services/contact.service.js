@@ -7,3 +7,7 @@ export const createContact = async (contact = undefined) => {
 
   return null
 }
+
+export const findContactByPk = async (id) => {
+  return await Contact.findByPk(id)
+}

@@ -16,6 +16,17 @@ export const findAll = async () => {
   })
 }
 
+export const findJobByEmployee = async ({ userId = '' }) => {
+  return await Job.findAll({
+    order: [['createdAt', 'DESC']],
+    include: {
+      model: User,
+      as: 'employee',
+      where: { id: userId }
+    }
+  })
+}
+
 export const createJob = async ({ client = null, employee = null, reference = null, guild = null, ...job }) => {
   const includes = [
     { model: Contact, as: 'contact' },
@@ -39,6 +50,46 @@ export const createJob = async ({ client = null, employee = null, reference = nu
   // } else {
   //   job.client = client
   // }
+  job.client = client
+
+  if (reference) {
+    const referenceDB = await findReference({ id: reference })
+    if (!referenceDB) {
+      throw new ValidationError(404, `reference id:[${reference}] not found!`)
+    }
+    job.referenceId = referenceDB.id
+    includes.push({ model: Reference, as: 'reference' })
+  }
+
+  if (guild) {
+    const guildDB = await findGuild({ id: guild })
+    if (!guildDB) {
+      throw new ValidationError(404, `guild id:[${guild}] not found!`)
+    }
+    job.guildId = guildDB.id
+    includes.push({ model: Guild, as: 'guild' })
+  }
+
+  return await Job.create(job, {
+    include: includes
+  })
+}
+
+export const updateJob = async ({ client = null, employee = null, reference = null, guild = null, ...job }) => {
+  const includes = [
+    { model: Contact, as: 'contact' },
+    { model: Client, as: 'client' }
+  ]
+
+  if (employee) {
+    const employeeDB = await findUserById(employee)
+    if (!employeeDB) {
+      throw new ValidationError(404, `employee id:[${employee}] not found!`)
+    }
+    job.employeeId = employeeDB.id
+    includes.push({ model: User, as: 'employee' })
+  }
+
   job.client = client
 
   if (reference) {

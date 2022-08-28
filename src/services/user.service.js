@@ -171,3 +171,18 @@ export const findUser = async (options, includeRoles = false, includeGuilds = fa
 
   return await User.findOne(options)
 }
+
+export const userHasGuild = async (userId, guildId) => {
+  const userDB = await User.findByPk(userId, {
+    include: {
+      model: Guild,
+      as: 'guilds',
+      through: {
+        attributes: []
+      },
+      where: { id: guildId }
+    }
+  })
+
+  return userDB !== null
+}

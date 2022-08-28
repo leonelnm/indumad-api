@@ -11,3 +11,7 @@ export const findClient = async ({ nif }) => {
 
   return null
 }
+
+export const findClientByPk = async (id) => {
+  return await Client.findByPk(id)
+}
