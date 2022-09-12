@@ -6,7 +6,7 @@ import validateToken from '../middlewares/validateToken.js'
 const jobRouter = Router()
 
 jobRouter.get('/', validateToken, findAllHandler)
-jobRouter.get('/:id', validateToken, isGestor, findJobHandler)
+jobRouter.get('/:id', validateToken, findJobHandler)
 jobRouter.put('/:id', validateToken, isGestor, updateJobHandler)
 jobRouter.post('/', validateToken, isGestor, createHandler)
 
