@@ -17,7 +17,7 @@ authRouter.post('/login', async (req, res, next) => {
 
     if (user !== null) {
       res.cookie(config.cookieAuthName, generateJWT(user), {
-        sameSite: 'lax',
+        sameSite: 'none',
         secure: config.env === Environtment.PRODUCTION,
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 10 // 10h
