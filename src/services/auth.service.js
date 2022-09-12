@@ -5,8 +5,8 @@ import { findUserForLogin } from './user.service.js'
 
 const { secret, tokenExpirationMinutes: expiresIn } = config.jwt
 
-export const generateToken = ({ id, username, name, role }) => {
-  const payload = {
+export const generatePayload = ({ id, username, name, role }) => {
+  return {
     user: {
       id,
       name,
@@ -14,7 +14,14 @@ export const generateToken = ({ id, username, name, role }) => {
       role
     }
   }
+}
 
+export const generateJWT = (user) => {
+  return jwt.sign(generatePayload(user), secret, { expiresIn: expiresIn * 60 })
+}
+
+export const generateToken = (user) => {
+  const payload = generatePayload(user)
   return {
     token: jwt.sign(payload, secret, { expiresIn: expiresIn * 60 }),
     user: payload.user
