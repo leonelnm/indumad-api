@@ -13,6 +13,7 @@ const validENvironments = toArrayStringFromObjectType(Environtment)
 const envVarsSchema = Joi.object().keys({
   NODE_ENV: Joi.string().valid(...validENvironments).required(),
   PORT: Joi.number().default(3000),
+  AUTH_COOKIE_NAME: Joi.required(),
 
   // JWT
   JWT_SECRET: Joi.string().required().description('JWT secret key'),
@@ -46,6 +47,7 @@ if (error !== null && error !== undefined) {
 export default {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
+  cookieAuthName: envVars.AUTH_COOKIE_NAME,
   jwt: {
     secret: envVars.JWT_SECRET,
     tokenExpirationMinutes: envVars.JWT_TOKEN_EXPIRATION_MINUTES
