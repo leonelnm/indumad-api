@@ -15,6 +15,8 @@ authRouter.post('/login', async (req, res, next) => {
     }
     const user = await login({ username, password })
 
+    console.log(`secure: ${config.env === Environtment.PRODUCTION}`)
+
     if (user !== null) {
       res.cookie(config.cookieAuthName, generateJWT(user), {
         sameSite: 'none',
