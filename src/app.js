@@ -16,7 +16,7 @@ app.use(morgan('dev'))
 
 app.use(cors({
   credentials: true,
-  origin: '*'
+  origin: true
 }))
 
 app.disable('x-powered-by')
