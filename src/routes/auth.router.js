@@ -16,11 +16,12 @@ authRouter.post('/login', async (req, res, next) => {
     const user = await login({ username, password })
 
     console.log(`secure: ${config.env === Environtment.PRODUCTION}`)
+    const secure = config.env === Environtment.PRODUCTION && Boolean(config.cookieSecure)
 
     if (user !== null) {
       res.cookie(config.cookieAuthName, generateJWT(user), {
         sameSite: 'none',
-        secure: true,
+        secure,
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 10 // 10h
       })
@@ -62,6 +63,15 @@ authRouter.get('/validatecookie', async (req, res, next) => {
     }
 
     return res.status(401).send({ msg: 'Invalid cookie auth or missing' })
+  } catch (error) {
+    next(error)
+  }
+})
+
+authRouter.post('/logout', async (_req, res, next) => {
+  try {
+    res.clearCookie(config.cookieAuthName)
+    return res.status(200).end()
   } catch (error) {
     next(error)
   }

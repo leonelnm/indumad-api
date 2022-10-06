@@ -13,6 +13,7 @@ export default (req, res, next) => {
 
     // if (authorization && authorization.startsWith('Bearer ')) {
     // const token = authorization.substring(7)
+    console.log('cookies:', req.cookies)
     const token = req.cookies[config.cookieAuthName]
     if (token) {
       const { user } = verifyToken(token)

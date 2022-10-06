@@ -33,6 +33,8 @@ const envVarsSchema = Joi.object().keys({
   // SuperAdmin
   SUPERADMIN_PASSWORD: Joi.string(),
 
+  SECURE_COOKIE: Joi.boolean().default(true),
+
   // Rate limit
   RATE_LIMIT_LOGIN_ERROR_ATTEMPTS: Joi.number().default(20),
   RATE_LIMIT_LOGIN_TIME_LOCK_MINUTES: Joi.number().default(15)
@@ -48,6 +50,7 @@ export default {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
   cookieAuthName: envVars.AUTH_COOKIE_NAME,
+  cookieSecure: envVars.SECURE_COOKIE,
   jwt: {
     secret: envVars.JWT_SECRET,
     tokenExpirationMinutes: envVars.JWT_TOKEN_EXPIRATION_MINUTES
