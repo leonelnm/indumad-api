@@ -8,10 +8,10 @@ const roles = toArrayStringFromObjectType(RoleEnumType)
 // Schemas
 const schemaToCreateUser = Joi.object({
   username: Joi.string().alphanum().required(),
-  name: Joi.string().min(4).required(),
-  lastname: Joi.string().min(4).required(),
+  name: Joi.string().min(2).required(),
+  lastname: Joi.string().min(2).required(),
   phone: Joi.string().min(5).alphanum().required(),
-  password: Joi.string().min(6).required(),
+  password: Joi.string().min(5).required(),
   dni: Joi.string().alphanum().required(),
   role: Joi.string().valid(...roles).required(),
   guilds: Joi.array().items(Joi.number())

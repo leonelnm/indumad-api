@@ -19,11 +19,13 @@ export const findAll = async () => {
 export const findJobByEmployee = async ({ userId = '' }) => {
   return await Job.findAll({
     order: [['createdAt', 'DESC']],
-    include: {
-      model: User,
-      as: 'employee',
-      where: { id: userId }
-    }
+    include: [
+      { model: User, as: 'employee', where: { id: userId } },
+      { model: Client, as: 'client' },
+      { model: Contact, as: 'contact' },
+      { model: Guild, as: 'guild' },
+      { model: Reference, as: 'reference' }
+    ]
   })
 }
 
