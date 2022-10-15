@@ -1,7 +1,7 @@
 import app from './app.js'
 import config from './config/config.js'
 import { dbInstance } from './config/database.js'
-import { createRoles, createSuperAdmin } from './config/seed.js'
+import { createData, createRoles, createSuperAdmin } from './config/seed.js'
 import './models/associations.js'
 
 const port = config.port
@@ -18,6 +18,7 @@ app.listen(port, async () => {
     // Crear Primeros datos
     await createRoles()
     await createSuperAdmin()
+    await createData()
   } catch (error) {
     console.error('Unable to connect to the database')
     console.error('Error name:', error.name)
