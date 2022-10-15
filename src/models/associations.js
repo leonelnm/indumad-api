@@ -2,6 +2,7 @@ import { Client } from './client.model.js'
 import { Contact } from './contact.model.js'
 import { Guild } from './guild.model.js'
 import { Job } from './job.model.js'
+import { Note } from './notes.model.js'
 import { Reference } from './reference.model.js'
 import { Role } from './role.model.js'
 import { User } from './user.model.js'
@@ -23,7 +24,7 @@ Job.belongsTo(Contact, { as: 'contact' })
 Client.hasMany(Job)
 Job.belongsTo(Client, { as: 'client' })
 
-// Association one-to-many, job - client
+// Association one-to-many, user - job
 User.hasMany(Job)
 Job.belongsTo(User, { as: 'employee' })
 
@@ -34,3 +35,11 @@ Job.belongsTo(Guild, { as: 'guild' })
 // Association one-to-many, job - reference
 Reference.hasMany(Job)
 Job.belongsTo(Reference, { as: 'reference' })
+
+// Association one-to-many, job - note
+Job.hasMany(Note)
+Note.belongsTo(Job, { as: 'job' })
+
+// Association one-to-many, user - note
+User.hasMany(Note)
+Note.belongsTo(User, { as: 'owner' })

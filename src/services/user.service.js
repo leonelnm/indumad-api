@@ -32,7 +32,7 @@ export const createUser = async ({ role, guilds = [], ...user }) => {
     return await userCreatedDB.reload()
   }
 
-  return { msg: 'userCreated' }
+  return userCreatedDB
 }
 
 export const findAll = async ({ userQuery = {}, guildQuery = {} }) => {
