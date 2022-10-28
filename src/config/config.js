@@ -37,7 +37,14 @@ const envVarsSchema = Joi.object().keys({
 
   // Rate limit
   RATE_LIMIT_LOGIN_ERROR_ATTEMPTS: Joi.number().default(20),
-  RATE_LIMIT_LOGIN_TIME_LOCK_MINUTES: Joi.number().default(15)
+  RATE_LIMIT_LOGIN_TIME_LOCK_MINUTES: Joi.number().default(15),
+
+  // Cloudinary
+  CLOUDINARY_CLOUD_NAME: Joi.string().required(),
+  CLOUDINARY_API_KEY: Joi.string().required(),
+  CLOUDINARY_API_SECRET: Joi.string().required(),
+
+  EVIDENCE_MAX_SIZE_MB: Joi.number().default(1)
 }).unknown()
 
 const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' } }).validate(process.env)
@@ -79,5 +86,12 @@ export default {
     }
   },
   saltRound: envVars.SALT_ROUNDS,
-  superadminPassword: envVars.SUPERADMIN_PASSWORD
+  superadminPassword: envVars.SUPERADMIN_PASSWORD,
+  cloudinary: {
+    cloud_name: envVars.CLOUDINARY_CLOUD_NAME,
+    api_key: envVars.CLOUDINARY_API_KEY,
+    api_secret: envVars.CLOUDINARY_API_SECRET
+  },
+  evidenceSize: envVars.EVIDENCE_MAX_SIZE_MB
+
 }

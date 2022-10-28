@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import authRouter from './auth.router.js'
+import evidenceRouter from './evidence.router.js'
 import followUpNotesRouter from './followupnotes.js'
 import guildRouter from './guild.router.js'
 import jobRouter from './job.router.js'
@@ -16,5 +17,6 @@ router.use('/guild', guildRouter)
 router.use('/reference', referenceRouter)
 router.use('/job', jobRouter)
 router.use('/followupnotes', followUpNotesRouter)
+router.use('/evidence', evidenceRouter)
 
 export default router

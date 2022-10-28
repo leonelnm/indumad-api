@@ -22,3 +22,5 @@ jspm_packages/
 data
 
 package-lock.json
+
+uploads/

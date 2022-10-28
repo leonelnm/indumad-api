@@ -1,8 +1,21 @@
 const controlledExceptions = [
   'SequelizeValidationError',
   'SequelizeUniqueConstraintError',
-  'ValidationError'
+  'ValidationError',
+  'MulterError'
 ]
+
+const evaluateCode = (data) => {
+  let code = 400
+  let codeString = null
+  if (isNaN(data)) {
+    codeString = data
+  } else {
+    code = data * 1
+  }
+
+  return { code, codeString }
+}
 
 export default (error, _req, res, _next) => {
   console.log('Name', error.name)
@@ -10,9 +23,10 @@ export default (error, _req, res, _next) => {
 
   if ((error instanceof Error) &&
     controlledExceptions.includes(error.name)) {
-    const code = error.code || 400
+    const { code, codeString } = evaluateCode(error.code)
 
     res.status(code).send({
+      ...(codeString && { code: codeString }),
       error: error.message
     })
   } else {

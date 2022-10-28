@@ -1,5 +1,6 @@
 import { Client } from './client.model.js'
 import { Contact } from './contact.model.js'
+import { Evidence } from './evidence.model.js'
 import { Guild } from './guild.model.js'
 import { Job } from './job.model.js'
 import { Note } from './notes.model.js'
@@ -43,3 +44,11 @@ Note.belongsTo(Job, { as: 'job' })
 // Association one-to-many, user - note
 User.hasMany(Note)
 Note.belongsTo(User, { as: 'owner' })
+
+// Association one-to-many, job - evidence
+Job.hasMany(Evidence)
+Evidence.belongsTo(Job, { as: 'job' })
+
+// Association one-to-many, user - evidence
+User.hasMany(Evidence)
+Evidence.belongsTo(User, { as: 'owner' })
