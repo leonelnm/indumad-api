@@ -24,3 +24,5 @@ data
 package-lock.json
 
 uploads/
+
+render-environments*
