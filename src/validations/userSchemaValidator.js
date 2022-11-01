@@ -31,10 +31,15 @@ const userSchemaToUpdateAsGestor = userSchemaToUpdate.keys({
   guilds: Joi.array().items(Joi.number())
 })
 
+const passwordRegex = '^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z[0-9]{6,}$'
+
 const updatePasswordSchema = Joi.object({
   id: Joi.number().required(),
-  password: Joi.string().min(6).required(),
-  newpassword: Joi.string().min(6).required()
+  newpassword: Joi.string().min(6).pattern(new RegExp(passwordRegex)).required()
+    .messages({
+      'string.min': 'newpassword is not valid; minimum six characters, at least one letter and one number',
+      'string.pattern.base': 'newpassword is not valid; minimum six characters, at least one letter and one number'
+    })
 })
 
 // Validates

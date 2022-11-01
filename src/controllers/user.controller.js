@@ -1,7 +1,7 @@
 import { compareUser } from '../helper/compare.js'
 import { toNewUser, toPasswordUpdate, userdbListToForm, userdbToFullForm } from '../helper/converter.js'
 import { authorizedRoles, isGestor, validateRole } from '../helper/utils.js'
-import { encryptPassword, validatePassword } from '../services/auth.service.js'
+import { encryptPassword } from '../services/auth.service.js'
 import { findRole } from '../services/role.service.js'
 import { createUser, findAll, findAllByGuild, findUser, findUserById } from '../services/user.service.js'
 import { findAll as findAllGuilds } from '../services/guild.service.js'
@@ -223,14 +223,13 @@ export const updatePasswordHandler = async (req, res, next) => {
     // permite cambiar la password
     if (userDB &&
       (
-        validatePassword({ password: updatePassword.password, user: userDB }) ||
+        userDB.id === updatePassword.id * 1 ||
         validateRole({ userRoles, authorizedRoles: authorizedRoles.gestor })
       )) {
       userDB.password = encryptPassword({ password: updatePassword.newpassword })
       await userDB.save()
 
-      delete userDB.password // quitar password para no return
-      return res.json(userDB).end()
+      return res.json({ msg: 'OK' }).end()
     }
 
     return res.status(400).json({ msg: 'User not found or bad credentials!' }).end()

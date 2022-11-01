@@ -28,7 +28,6 @@ export const toUserUpdate = (userFromRequest) => {
 export const toPasswordUpdate = ({ idFromParams, dataFromRequest = {} }) => {
   const updatePassword = {}
   updatePassword.id = idFromParams
-  updatePassword.password = dataFromRequest.password
   updatePassword.newpassword = dataFromRequest.newpassword
   return updatePassword
 }
