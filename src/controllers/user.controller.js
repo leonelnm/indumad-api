@@ -32,7 +32,6 @@ export const updateUserHandler = async (req, res, next) => {
     if (error) {
       return res.status(400).json({ msg: error }).end()
     }
-    console.log({ userFromRequest })
 
     const where = { id }
     const userDB = await findUser({ where }, true, userFromRequest.guilds !== undefined)

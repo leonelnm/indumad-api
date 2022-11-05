@@ -1,4 +1,5 @@
 import { compare, compareJob } from '../helper/compare.js'
+import { jobToDeliveryNote } from '../helper/converter.js'
 import { isGestor, removeEmptyValuesFromObject, removeNullValuesFromObject } from '../helper/utils.js'
 import { findClientByPk } from '../services/client.service.js'
 import { findContactByPk } from '../services/contact.service.js'
@@ -6,6 +7,8 @@ import { findGuild } from '../services/guild.service.js'
 import { createJob, findAll, findJob, findJobByEmployee } from '../services/job.service.js'
 import { findReference } from '../services/reference.service.js'
 import { findUserById, userHasGuild } from '../services/user.service.js'
+import { JobStateType } from '../types/jobStateEnumType.js'
+import { validateIdField } from '../validations/fieldValidator.js'
 import { validateJobToCreate, validateJobToUpdate } from '../validations/jobSchemaValidator.js'
 
 export const findAllHandler = async (req, res, next) => {
@@ -123,6 +126,7 @@ export const updateJobHandler = async (req, res, next) => {
         await jobDB.setEmployee(employeeDB)
         console.log('STEP: updateJob -> employee updated')
       }
+      jobFromRequest.state = JobStateType.PENDING_VISITED
     }
 
     const { changes, jobDB: jobDBWithChanges, fields } = compareJob(jobDB, jobFromRequest)
@@ -133,6 +137,30 @@ export const updateJobHandler = async (req, res, next) => {
     // const response = await createJob(jobFromRequest)
     return res.status(201).json(await jobDB.reload()).end()
   } catch (error) {
+    next(error)
+  }
+}
+
+export const deliveryNoteByJobIdHandler = async (req, res, next) => {
+  try {
+    const { error, value: jobId } = validateIdField(req.params.jobId)
+    if (error) {
+      return res.status(400).json({ msg: error }).end()
+    }
+
+    // search jobId exist
+    const job = await findJob({ id: jobId })
+    if (!job) {
+      return res.status(404).json({ msg: 'Job not found' }).end()
+    }
+
+    if (job.state === JobStateType.INITIAL) {
+      return res.status(400).json({ msg: 'Job has not yet been assigned to the worker' }).end()
+    }
+
+    return res.json(jobToDeliveryNote({ job })).end()
+  } catch (error) {
+    console.log('STEP: [deliveryNoteByJobId]', error)
     next(error)
   }
 }

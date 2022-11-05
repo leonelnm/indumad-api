@@ -31,7 +31,7 @@ const envVarsSchema = Joi.object().keys({
   SALT_ROUNDS: Joi.number().default(10),
 
   // SuperAdmin
-  SUPERADMIN_PASSWORD: Joi.string(),
+  SUPERADMIN_PASSWORD: Joi.string().required(),
 
   SECURE_COOKIE: Joi.boolean().default(true),
 
