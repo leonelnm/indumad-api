@@ -5,6 +5,7 @@ import { Guild } from '../models/guild.model.js'
 import { Job } from '../models/job.model.js'
 import { Reference } from '../models/reference.model.js'
 import { User } from '../models/user.model.js'
+import { JobStateType } from '../types/jobStateEnumType.js'
 import { findGuild } from './guild.service.js'
 import { findReference } from './reference.service.js'
 // import { findClient } from './client.service.js'
@@ -42,6 +43,9 @@ export const createJob = async ({ client = null, employee = null, reference = nu
     }
     job.employeeId = employeeDB.id
     includes.push({ model: User, as: 'employee' })
+
+    // cambia estado si llega con empleado
+    job.state = JobStateType.PENDING_VISITED
   }
 
   // FIXME find client before creating job to keep the same client on some jobs
@@ -90,6 +94,9 @@ export const updateJob = async ({ client = null, employee = null, reference = nu
     }
     job.employeeId = employeeDB.id
     includes.push({ model: User, as: 'employee' })
+
+    // cambia estado si llega con empleado
+    job.state = JobStateType.PENDING_VISITED
   }
 
   job.client = client

@@ -27,7 +27,7 @@ export default (error, _req, res, _next) => {
 
     res.status(code).send({
       ...(codeString && { code: codeString }),
-      error: error.message
+      msg: error.message
     })
   } else {
     console.log('StackTrace', error)

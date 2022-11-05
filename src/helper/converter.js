@@ -81,3 +81,30 @@ export const toGuildOrReferencedUpdate = ({ dataFromRequest = {} }) => {
 
   return update
 }
+
+export const jobToDeliveryNote = ({ job = undefined }) => {
+  const deliveryNote = {}
+
+  if (job) {
+    deliveryNote.id = job.id
+    deliveryNote.extReference = job.extReference
+    deliveryNote.createAt = job.createdAt
+    deliveryNote.client = {
+      nif: job.client.nif,
+      name: job.client.name,
+      phone: job.client.phone
+    }
+
+    deliveryNote.contact = {
+      name: job.contact.name,
+      address: job.contact.address,
+      phone: job.contact.phone
+    }
+    deliveryNote.description = job.incidentInfo
+    deliveryNote.worker = `${job.employee.name} ${job.employee.lastname}`
+    deliveryNote.guild = job.guild.name
+    deliveryNote.reference = job.reference.name
+  }
+
+  return deliveryNote
+}
