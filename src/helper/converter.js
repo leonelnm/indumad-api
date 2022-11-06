@@ -1,3 +1,5 @@
+import { JobStateType } from '../types/jobStateEnumType.js'
+
 export const toNewUser = (userFromRequest) => {
   const newUser = {
     username: userFromRequest.username.toLowerCase(),
@@ -80,6 +82,23 @@ export const toGuildOrReferencedUpdate = ({ dataFromRequest = {} }) => {
   }
 
   return update
+}
+
+export const jobToForm = (job = {}, unreadMessages = 0) => {
+  const form = { ...job }
+  form.hasDeliveryNote = job.state !== JobStateType.INITIAL
+  form.unreadMessages = unreadMessages
+
+  return form
+}
+
+export const jobListToForm = (list = [], unreadMessages = []) => {
+  return list.map(job => jobToForm(job.toJSON(), filterUnreadMessagesByJob(unreadMessages, job.id)))
+}
+
+const filterUnreadMessagesByJob = (list = [], id) => {
+  const job = list.find(item => item.jobId === id)
+  return job ? job.unread * 1 : 0
 }
 
 export const jobToDeliveryNote = ({ job = undefined }) => {

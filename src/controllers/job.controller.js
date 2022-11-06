@@ -1,8 +1,9 @@
 import { compare, compareJob } from '../helper/compare.js'
-import { jobToDeliveryNote } from '../helper/converter.js'
+import { jobListToForm, jobToDeliveryNote, jobToForm } from '../helper/converter.js'
 import { isGestor, removeEmptyValuesFromObject, removeNullValuesFromObject } from '../helper/utils.js'
 import { findClientByPk } from '../services/client.service.js'
 import { findContactByPk } from '../services/contact.service.js'
+import { getAllUnreadMessage, getUnreadMessageByJobId } from '../services/followUpNote.service.js'
 import { findGuild } from '../services/guild.service.js'
 import { createJob, findAll, findJob, findJobByEmployee } from '../services/job.service.js'
 import { findReference } from '../services/reference.service.js'
@@ -14,12 +15,15 @@ import { validateJobToCreate, validateJobToUpdate } from '../validations/jobSche
 export const findAllHandler = async (req, res, next) => {
   try {
     const { role } = req.user
+    let list = []
     if (isGestor({ role })) {
-      const list = await findAll()
-      return res.json(list).end()
+      list = await findAll()
+    } else {
+      list = await findJobByEmployee({ userId: req.user.id })
     }
-    const list = await findJobByEmployee({ userId: req.user.id })
-    return res.json(list).end()
+    const listUnreadMessages = await getAllUnreadMessage({ isGestor: isGestor({ role }) })
+
+    return res.json(jobListToForm(list, listUnreadMessages)).end()
   } catch (error) {
     next(error)
   }
@@ -44,7 +48,8 @@ export const findJobHandler = async (req, res, next) => {
   try {
     const { id } = req.params
     const response = await findJob({ id })
-    return res.json(response).end()
+    const unreadMessages = await getUnreadMessageByJobId({ jobId: id, isGestor: isGestor({ role: req.user.role }) })
+    return res.json(jobToForm(response.toJSON(), unreadMessages)).end()
   } catch (error) {
     next(error)
   }
