@@ -5,7 +5,7 @@ import { validateIdField } from '../validations/fieldValidator.js'
 export const findAllHandler = async (req, res, next) => {
   try {
     // validate id
-    const { error, value: jobId } = validateIdField(req.params.jobId)
+    const { error, value: jobId } = validateIdField(req.params.id)
     if (error) {
       return res.status(400).json({ msg: error }).end()
     }
@@ -26,7 +26,7 @@ export const findAllHandler = async (req, res, next) => {
 export const uploadHandler = async (req, res, next) => {
   try {
     // validate id
-    const { error, value: jobId } = validateIdField(req.params.jobId)
+    const { error, value: jobId } = validateIdField(req.params.id)
     if (error) {
       return res.status(400).json({ msg: error }).end()
     }

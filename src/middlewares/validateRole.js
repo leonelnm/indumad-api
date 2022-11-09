@@ -1,9 +1,9 @@
-import { authorizedRoles, validateRole } from '../helper/utils.js'
+import * as utils from '../helper/utils.js'
 
 export const isSuperAdmin = (req, res, next) => {
   try {
-    const { role: userRole } = req.user
-    if (validateRole({ userRole, authorizedRoles: authorizedRoles.superAdmin })) {
+    const { role } = req.user
+    if (utils.isSuperAdmin({ role })) {
       next()
     } else {
       return res.status(401).send({ msg: 'Insufficient Permission' })
@@ -15,8 +15,8 @@ export const isSuperAdmin = (req, res, next) => {
 
 export const isAdministrador = (req, res, next) => {
   try {
-    const { role: userRole } = req.user
-    if (validateRole({ userRole, authorizedRoles: authorizedRoles.administrador })) {
+    const { role } = req.user
+    if (utils.isAdministrador({ role })) {
       next()
     } else {
       return res.status(401).send({ msg: 'Insufficient Permission' })
@@ -28,8 +28,9 @@ export const isAdministrador = (req, res, next) => {
 
 export const isGestor = (req, res, next) => {
   try {
-    const { role: userRole } = req.user
-    if (validateRole({ userRole, authorizedRoles: authorizedRoles.gestor })) {
+    const { role } = req.user
+    if (utils.isGestor({ role })) {
+      req.user.isGestor = true
       next()
     } else {
       return res.status(401).send({ msg: 'Insufficient Permission' })
@@ -41,8 +42,8 @@ export const isGestor = (req, res, next) => {
 
 export const isAutonomo = (req, res, next) => {
   try {
-    const { role: userRole } = req.user
-    if (validateRole({ userRole, authorizedRoles: authorizedRoles.gestor })) {
+    const { role } = req.user
+    if (utils.isAutonomo({ role })) {
       next()
     } else {
       return res.status(401).send({ msg: 'Insufficient Permission' })
@@ -54,8 +55,8 @@ export const isAutonomo = (req, res, next) => {
 
 export const isContratado = (req, res, next) => {
   try {
-    const { role: userRole } = req.user
-    if (validateRole({ userRole, authorizedRoles: authorizedRoles.contratado })) {
+    const { role } = req.user
+    if (utils.isContratado({ role })) {
       next()
     } else {
       return res.status(401).send({ msg: 'Insufficient Permission' })

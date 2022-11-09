@@ -6,6 +6,7 @@ import { Job } from './job.model.js'
 import { Note } from './notes.model.js'
 import { Reference } from './reference.model.js'
 import { Role } from './role.model.js'
+import { Schedule } from './schedule.model.js'
 import { User } from './user.model.js'
 
 // --- USER --- //
@@ -52,3 +53,10 @@ Evidence.belongsTo(Job, { as: 'job' })
 // Association one-to-many, user - evidence
 User.hasMany(Evidence)
 Evidence.belongsTo(User, { as: 'owner' })
+
+// Association one-to-many, job - note
+Job.hasMany(Schedule)
+Schedule.belongsTo(Job, { as: 'job' })
+
+User.hasMany(Schedule)
+Schedule.belongsTo(User, { as: 'employee' })

@@ -135,3 +135,15 @@ export const findJob = async (where = {}) => {
     where
   })
 }
+
+export const checkJobAssignToEmployee = async ({ userId = '', jobId }) => {
+  console.log('checkJobAssignToEmployee')
+  console.log({ userId }, { jobId })
+
+  return await Job.findOne({
+    where: { id: jobId },
+    include: [
+      { model: User, as: 'employee', where: { id: userId } }
+    ]
+  })
+}
