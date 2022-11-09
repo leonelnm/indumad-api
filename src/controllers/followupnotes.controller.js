@@ -7,7 +7,7 @@ import { validateFollowUpNoteSchema } from '../validations/followUpNotesSchemaVa
 export const findAllByJobHandler = async (req, res, next) => {
   try {
     // validate id
-    const { error, value: jobId } = validateIdField(req.params.jobId)
+    const { error, value: jobId } = validateIdField(req.params.id)
     if (error) {
       return res.status(400).json({ msg: error }).end()
     }
@@ -30,7 +30,7 @@ export const findAllByJobHandler = async (req, res, next) => {
 export const addFollowupNoteToJobHandler = async (req, res, next) => {
   try {
     // validate id
-    const { error, value: jobId } = validateIdField(req.params.jobId)
+    const { error, value: jobId } = validateIdField(req.params.id)
     if (error) {
       return res.status(400).json({ msg: error }).end()
     }

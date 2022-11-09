@@ -148,7 +148,7 @@ export const updateJobHandler = async (req, res, next) => {
 
 export const deliveryNoteByJobIdHandler = async (req, res, next) => {
   try {
-    const { error, value: jobId } = validateIdField(req.params.jobId)
+    const { error, value: jobId } = validateIdField(req.params.id)
     if (error) {
       return res.status(400).json({ msg: error }).end()
     }
