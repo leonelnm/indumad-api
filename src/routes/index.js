@@ -6,6 +6,7 @@ import guildRouter from './guild.router.js'
 import jobRouter from './job.router.js'
 import referenceRouter from './reference.router.js'
 import roleRouter from './role.router.js'
+import scheduleRouter from './schedule.router.js'
 import userRouter from './user.router.js'
 
 const router = Router()
@@ -18,5 +19,6 @@ router.use('/reference', referenceRouter)
 router.use('/job', jobRouter)
 router.use('/followupnotes', followUpNotesRouter)
 router.use('/evidence', evidenceRouter)
+router.use('/schedule', scheduleRouter)
 
 export default router

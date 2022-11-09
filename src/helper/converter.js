@@ -127,3 +127,16 @@ export const jobToDeliveryNote = ({ job = undefined }) => {
 
   return deliveryNote
 }
+
+export const employeeScheduleToForm = ({ description, dateTime, duration, jobId }) => {
+  return {
+    dateTime,
+    description,
+    duration,
+    jobId
+  }
+}
+
+export const employeeListScheduleToForm = (list) => {
+  return list.map(employeeScheduleToForm)
+}
