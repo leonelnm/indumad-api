@@ -1,4 +1,4 @@
-import { createRole, findRole } from '../services/role.service.js'
+import { createRole } from '../services/role.service.js'
 import { RoleEnumType } from '../types/roleEnumType.js'
 import { validateRoleSchema } from '../validations/roleSchemaValidator.js'
 
@@ -27,12 +27,4 @@ export const createHandler = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
-}
-
-export const findRolesHandler = async (req, res) => {
-  const { role } = req.body
-
-  const data = await findRole(role)
-
-  return res.json(data).end()
 }
