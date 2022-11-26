@@ -1,8 +1,8 @@
 import { isGestor } from '../helper/utils.js'
 import { createFollowUpNote, findFollowUpNoteByJob, markAsReadFollowUpNote } from '../services/followUpNote.service.js'
-import { findJob } from '../services/job.service.js'
+import { addBudgetByJobId, approvalBudgetByJobId, findJob, markJobAsCompleted } from '../services/job.service.js'
 import { validateIdField } from '../validations/fieldValidator.js'
-import { validateFollowUpNoteSchema } from '../validations/followUpNotesSchemaValidator.js'
+import { validateBudgetApprovalSchema, validateBudgetNoteSchema, validateFollowUpNoteSchema } from '../validations/followUpNotesSchemaValidator.js'
 
 export const findAllByJobHandler = async (req, res, next) => {
   try {
@@ -84,6 +84,79 @@ export const markAsReadFollowUpNoteHandler = async (req, res, next) => {
     }
 
     return res.status(200).json({ msg: 'Update succesfully!' }).end()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const addBudgetToJobHandler = async (req, res, next) => {
+  try {
+    const { error: errorSchema, value } = validateBudgetNoteSchema(req.body)
+    if (errorSchema) {
+      return res.status(400).json({ msg: errorSchema }).end()
+    }
+
+    const jobId = req.params.id * 1
+    const note = {
+      text: value.text,
+      isGestor: isGestor({ role: req.user.role }),
+      ownerId: req.user.id,
+      jobId
+    }
+
+    const { noteDB, jobDB } = await addBudgetByJobId({ jobId, budget: value.budget, note })
+    if (!jobDB) {
+      return res.status(404).json({ msg: 'Job not found' }).end()
+    }
+
+    return res.status(201).json(noteDB).end()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const approveBudgetByJobHandler = async (req, res, next) => {
+  try {
+    const { error: errorSchema, value: { approve } } = validateBudgetApprovalSchema(req.body)
+    if (errorSchema) {
+      return res.status(400).json({ msg: errorSchema }).end()
+    }
+
+    const jobId = req.params.id * 1
+    const note = {
+      text: '',
+      isGestor: isGestor({ role: req.user.role }),
+      ownerId: req.user.id,
+      jobId
+    }
+
+    const { noteDB, jobDB } = await approvalBudgetByJobId({ jobId, approve, note })
+    if (!jobDB) {
+      return res.status(404).json({ msg: 'Job not found' }).end()
+    }
+
+    return res.status(201).json(noteDB).end()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const jobCompletedHandler = async (req, res, next) => {
+  try {
+    const jobId = req.params.id * 1
+    const note = {
+      text: '',
+      isGestor: isGestor({ role: req.user.role }),
+      ownerId: req.user.id,
+      jobId
+    }
+
+    const { noteDB, jobDB } = await markJobAsCompleted({ jobId, note })
+    if (!jobDB) {
+      return res.status(404).json({ msg: 'Job not found' }).end()
+    }
+
+    return res.status(201).json(noteDB).end()
   } catch (error) {
     next(error)
   }

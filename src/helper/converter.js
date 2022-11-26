@@ -87,6 +87,9 @@ export const toGuildOrReferencedUpdate = ({ dataFromRequest = {} }) => {
 export const jobToForm = (job = {}, unreadMessages = 0) => {
   const form = { ...job }
   form.hasDeliveryNote = job.state !== JobStateType.INITIAL
+  form.pendingApproval = job.state === JobStateType.BUDGET_VALIDATE
+  form.allowSendBudget = job.state === JobStateType.PENDING_BUDGET
+  form.inProgress = job.state === JobStateType.BUDGET_AUTHORIZED
   form.unreadMessages = unreadMessages
 
   return form

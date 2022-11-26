@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { jobCompletedHandler } from '../controllers/followupnotes.controller.js'
 import { createHandler, deliveryNoteByJobIdHandler, findAllHandler, findJobHandler, updateJobHandler } from '../controllers/job.controller.js'
 import { userAssignJobOrGestorJobParam } from '../middlewares/jobUserOrGestor.js'
 import { isGestor } from '../middlewares/validateRole.js'
@@ -11,5 +12,6 @@ jobRouter.get('/:id', validateToken, userAssignJobOrGestorJobParam, findJobHandl
 jobRouter.put('/:id', validateToken, isGestor, updateJobHandler)
 jobRouter.post('/', validateToken, isGestor, createHandler)
 jobRouter.get('/deliverynote/:id', validateToken, userAssignJobOrGestorJobParam, deliveryNoteByJobIdHandler)
+jobRouter.post('/completed/:id', validateToken, userAssignJobOrGestorJobParam, jobCompletedHandler)
 
 export default jobRouter

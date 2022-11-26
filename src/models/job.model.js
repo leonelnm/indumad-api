@@ -41,8 +41,8 @@ Job.init({
 
   budgetAccepted: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
-    allowNull: false,
+    // defaultValue: false,
+    // allowNull: false,
     validate: {
       isIn: {
         args: [[true, false]],
@@ -70,6 +70,10 @@ Job.init({
   // Precio + IVA
   finalPrice: {
     type: DataTypes.STRING(15)
+  },
+
+  closedAt: {
+    type: DataTypes.DATE
   }
 
 }, {
