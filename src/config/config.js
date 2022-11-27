@@ -44,7 +44,9 @@ const envVarsSchema = Joi.object().keys({
   CLOUDINARY_API_KEY: Joi.string().required(),
   CLOUDINARY_API_SECRET: Joi.string().required(),
 
-  EVIDENCE_MAX_SIZE_MB: Joi.number().default(1)
+  EVIDENCE_MAX_SIZE_MB: Joi.number().default(1),
+  ENABLE_BILLING_CRON: Joi.boolean().required(),
+  BILLING_CRON_EXPRESSION: Joi.string().required()
 }).unknown()
 
 const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' } }).validate(process.env)
@@ -92,6 +94,10 @@ export default {
     api_key: envVars.CLOUDINARY_API_KEY,
     api_secret: envVars.CLOUDINARY_API_SECRET
   },
-  evidenceSize: envVars.EVIDENCE_MAX_SIZE_MB
+  evidenceSize: envVars.EVIDENCE_MAX_SIZE_MB,
+  billing: {
+    cronEnabled: envVars.ENABLE_BILLING_CRON,
+    cronExpression: envVars.BILLING_CRON_EXPRESSION
+  }
 
 }

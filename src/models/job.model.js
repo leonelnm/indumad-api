@@ -87,6 +87,7 @@ Job.init({
         'UserId', 'employeeId',
         'ReferenceId', 'referenceId',
         'GuildId', 'guildId'
+        // 'InvoiceId', 'invoiceId'
       ]
     },
     include: [
@@ -96,5 +97,18 @@ Job.init({
       { model: Guild, as: 'guild' },
       { model: Reference, as: 'reference' }
     ]
+  },
+  scopes: {
+    billing: {
+      attributes: {
+        exclude: [
+          'ContactId', 'contactId',
+          'ClientId', 'clientId',
+          'UserId', 'employeeId',
+          'ReferenceId', 'referenceId',
+          'GuildId', 'guildId'
+        ]
+      }
+    }
   }
 })

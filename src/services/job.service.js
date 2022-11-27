@@ -1,4 +1,6 @@
+import { Op } from 'sequelize'
 import { ValidationError } from '../exceptions/ValidationError.js'
+import { getBeginEndDateFromMonth } from '../helper/date.js'
 import messages, { getCustomMessage } from '../helper/messages.js'
 import { Client } from '../models/client.model.js'
 import { Contact } from '../models/contact.model.js'
@@ -7,6 +9,7 @@ import { Job } from '../models/job.model.js'
 import { Reference } from '../models/reference.model.js'
 import { User } from '../models/user.model.js'
 import { JobStateType } from '../types/jobStateEnumType.js'
+import { getTotalWithIva } from './billing.service.js'
 import { registerNewNote } from './followUpNote.service.js'
 import { findGuild } from './guild.service.js'
 import { findReference } from './reference.service.js'
@@ -193,8 +196,10 @@ export const approvalBudgetByJobId = async ({ jobId, approve, note = {} }) => {
   if (jobDB) {
     let title
     if (approve) {
+      const { total } = getTotalWithIva({ iva: jobDB.iva, value: jobDB.budgetProposal })
+
       jobDB.budgetAccepted = true
-      jobDB.budgetFinal = getTotalWithIva({ iva: jobDB.iva, value: jobDB.budgetProposal })
+      jobDB.budgetFinal = total
       jobDB.state = JobStateType.BUDGET_AUTHORIZED
       title = messages.budget.aproved
     } else {
@@ -212,7 +217,19 @@ export const approvalBudgetByJobId = async ({ jobId, approve, note = {} }) => {
   return { noteDB, jobDB }
 }
 
-const getTotalWithIva = ({ iva, value }) => {
-  const percentage = ((iva / 100) * value).toFixed(2)
-  return ((value * 1) + (percentage * 1)).toFixed(2)
+export const findJobsToBilling = async ({ year, month }) => {
+  console.log('STEP: [job.service -> findJobsToBilling]')
+  const { begin, end } = getBeginEndDateFromMonth({ year, month })
+
+  return await Job.scope('billing').findAll({
+    where: {
+      state: JobStateType.DONE,
+      closedAt: {
+        [Op.between]: [begin, end]
+      },
+      InvoiceId: {
+        [Op.eq]: null
+      }
+    }
+  })
 }

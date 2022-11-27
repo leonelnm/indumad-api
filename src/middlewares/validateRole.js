@@ -65,3 +65,16 @@ export const isContratado = (req, res, next) => {
     next(error)
   }
 }
+
+export const isGestorOrAutonomo = (req, res, next) => {
+  try {
+    const { role } = req.user
+    if (utils.isGestor({ role }) || utils.isAutonomo({ role })) {
+      next()
+    } else {
+      return res.status(401).send({ msg: 'Insufficient Permission' })
+    }
+  } catch (error) {
+    next(error)
+  }
+}
