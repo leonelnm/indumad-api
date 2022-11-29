@@ -246,3 +246,14 @@ export const countJobByReference = async ({ referenceName }) => {
       }]
   })
 }
+
+export const countJobByGuild = async ({ guildName }) => {
+  return Job.count({
+    include: [
+      {
+        model: Guild,
+        as: 'guild',
+        where: { name: guildName }
+      }]
+  })
+}
