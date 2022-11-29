@@ -4,10 +4,11 @@ export const JobStateType = {
   PENDING_BUDGET: 'Esperando Presupuesto',
   BUDGET_VALIDATE: 'Pte. Aprobación Presupuesto',
   BUDGET_AUTHORIZED: 'En curso',
-  DONE: 'TERMINADO',
+  DONE: 'Terminado',
+  BILLING: 'Facturado',
   PREFINISH: 'Pte. COBRO',
-  FINISH: 'COBRADO',
-  CANCELED: 'ANULADO'
+  FINISH: 'Cobrado',
+  CANCELED: 'Anulado'
 }
 
 export const JobStateTypeAsList = Object.values(JobStateType)

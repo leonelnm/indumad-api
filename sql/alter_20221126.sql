@@ -12,10 +12,11 @@ CREATE TYPE enum_job_state AS ENUM('Pte. ASIGNAR',
 'Esperando Presupuesto',
 'Pte. Aprobación Presupuesto',
 'En curso',
-'TERMINADO',
+'Terminado',
+'Facturado',
 'Pte. COBRO',
-'COBRADO',
-'ANULADO');
+'Cobrado',
+'Anulado');
 
 ALTER TABLE job ALTER COLUMN state DROP DEFAULT;
 ALTER TABLE job ALTER COLUMN state TYPE enum_job_state USING state::text::enum_job_state;

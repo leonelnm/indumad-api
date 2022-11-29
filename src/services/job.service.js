@@ -16,14 +16,16 @@ import { findReference } from './reference.service.js'
 // import { findClient } from './client.service.js'
 import { findUserById } from './user.service.js'
 
-export const findAll = async () => {
+export const findAll = async ({ state = undefined }) => {
   return await Job.findAll({
+    where: { ...(state && { state }) },
     order: [['createdAt', 'DESC']]
   })
 }
 
-export const findJobByEmployee = async ({ userId = '' }) => {
+export const findJobByEmployee = async ({ userId = '', state = undefined }) => {
   return await Job.findAll({
+    where: { ...(state && { state }) },
     order: [['createdAt', 'DESC']],
     include: [
       { model: User, as: 'employee', where: { id: userId } },

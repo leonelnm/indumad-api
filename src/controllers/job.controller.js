@@ -9,19 +9,24 @@ import { findGuild } from '../services/guild.service.js'
 import { createJob, findAll, findJob, findJobByEmployee } from '../services/job.service.js'
 import { findReference } from '../services/reference.service.js'
 import { findUserById, userHasGuild } from '../services/user.service.js'
-import { JobStateType } from '../types/jobStateEnumType.js'
+import { JobStateType, JobStateTypeAsList } from '../types/jobStateEnumType.js'
 import { validateSearchByYear } from '../validations/billingSchemaValidator.js'
 import { validateIdField } from '../validations/fieldValidator.js'
 import { validateJobToCreate, validateJobToUpdate } from '../validations/jobSchemaValidator.js'
 
 export const findAllHandler = async (req, res, next) => {
   try {
+    const { state } = req.query
+    if (state && !JobStateTypeAsList.includes(state)) {
+      return res.status(400).json({ msg: 'state not valid' }).end()
+    }
+
     const { role } = req.user
     let list = []
     if (isGestor({ role })) {
-      list = await findAll()
+      list = await findAll({ state })
     } else {
-      list = await findJobByEmployee({ userId: req.user.id })
+      list = await findJobByEmployee({ userId: req.user.id, state })
     }
     const listUnreadMessages = await getAllUnreadMessage({ isGestor: isGestor({ role }) })
 
