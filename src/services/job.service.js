@@ -235,3 +235,14 @@ export const findJobsToBilling = async ({ year, month }) => {
     }
   })
 }
+
+export const countJobByReference = async ({ referenceName }) => {
+  return Job.count({
+    include: [
+      {
+        model: Reference,
+        as: 'reference',
+        where: { name: referenceName }
+      }]
+  })
+}
