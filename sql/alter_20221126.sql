@@ -5,6 +5,15 @@ ALTER TABLE job ADD CONSTRAINT "job_InvoiceId_fkey" FOREIGN KEY ("InvoiceId") RE
 
 
 -- INIT change job_state
+ALTER TYPE enum_job_state ADD VALUE 'Terminado';
+ALTER TYPE enum_job_state ADD VALUE 'Cobrado';
+ALTER TYPE enum_job_state ADD VALUE 'Anulado';
+
+update job set state = 'Terminado' where state = 'TERMINADO';
+update job set state = 'Cobrado' where state = 'COBRADO';
+update job set state = 'Anulado' where state = 'ANULADO';
+
+
 ALTER TYPE enum_job_state RENAME TO enum_job_state_old;
 
 CREATE TYPE enum_job_state AS ENUM('Pte. ASIGNAR',
