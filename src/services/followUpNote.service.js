@@ -59,3 +59,24 @@ export const getAllUnreadMessage = async ({ isGestor }) => {
     raw: true
   })
 }
+
+export const registerNewNote = async ({ text, isGestor = false, jobId, ownerId, title = undefined, nextLine = undefined }) => {
+  let customText = title ? title + text : text
+  if (nextLine) {
+    customText = customText + nextLine
+  }
+
+  const note = {
+    jobId,
+    ownerId,
+    text: customText
+  }
+
+  if (isGestor) {
+    note.readByGestor = true
+  } else {
+    note.readByEmployee = true
+  }
+
+  return await createFollowUpNote(note)
+}

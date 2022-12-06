@@ -1,6 +1,6 @@
 import { employeeListScheduleToForm } from '../helper/converter.js'
 import { isGestor } from '../helper/utils.js'
-import { findJob } from '../services/job.service.js'
+import { findJob, scheduleJob } from '../services/job.service.js'
 import { createSchedule, findAll, findAllByEmployee } from '../services/schedule.service.js'
 import { validateScheduleSchema } from '../validations/scheduleSchemaValidator.js'
 
@@ -50,6 +50,8 @@ export const createHandler = async (req, res, next) => {
 
     scheduleRequest.employeeId = req.user.id
     const scheduleDB = await createSchedule(scheduleRequest)
+
+    await scheduleJob(job)
 
     return res.status(201).json(scheduleDB).end()
   } catch (error) {

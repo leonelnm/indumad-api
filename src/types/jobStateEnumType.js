@@ -1,16 +1,14 @@
 export const JobStateType = {
   INITIAL: 'Pte. ASIGNAR',
-  PENDING_SCHEDULED: 'Pte. AGENDAR CITA',
-  ASIGNED: 'ASIGNADO',
   PENDING_VISITED: 'Pte. CITA Prof.',
-  VISITED: 'VISITADO',
-  BUDGET_VALIDATE: 'VALIDAR Ppto',
-  BUDGET_AUTHORIZED: 'Ppto. AUTORIZADO',
-  DONE: 'TERMINADO',
-  PERITO: 'Pte PERITO',
+  PENDING_BUDGET: 'Esperando Presupuesto',
+  BUDGET_VALIDATE: 'Pte. Aprobación Presupuesto',
+  BUDGET_AUTHORIZED: 'En curso',
+  DONE: 'Terminado',
+  BILLING: 'Facturado',
   PREFINISH: 'Pte. COBRO',
-  FINISH: 'COBRADO',
-  CANCELED: 'ANULADO'
+  FINISH: 'Cobrado',
+  CANCELED: 'Anulado'
 }
 
 export const JobStateTypeAsList = Object.values(JobStateType)

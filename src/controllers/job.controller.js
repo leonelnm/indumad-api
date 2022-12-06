@@ -1,6 +1,7 @@
 import { compare, compareJob } from '../helper/compare.js'
-import { jobListToForm, jobToDeliveryNote, jobToForm } from '../helper/converter.js'
+import { invoiceDBListToForm, invoiceDBListUserToForm, jobListToForm, jobToDeliveryNote, jobToForm } from '../helper/converter.js'
 import { isGestor, removeEmptyValuesFromObject, removeNullValuesFromObject } from '../helper/utils.js'
+import { executeBillingProcessOnDemand, getAllInvoicesByYear } from '../services/billing.service.js'
 import { findClientByPk } from '../services/client.service.js'
 import { findContactByPk } from '../services/contact.service.js'
 import { getAllUnreadMessage, getUnreadMessageByJobId } from '../services/followUpNote.service.js'
@@ -8,18 +9,24 @@ import { findGuild } from '../services/guild.service.js'
 import { createJob, findAll, findJob, findJobByEmployee } from '../services/job.service.js'
 import { findReference } from '../services/reference.service.js'
 import { findUserById, userHasGuild } from '../services/user.service.js'
-import { JobStateType } from '../types/jobStateEnumType.js'
+import { JobStateType, JobStateTypeAsList } from '../types/jobStateEnumType.js'
+import { validateSearchByYear } from '../validations/billingSchemaValidator.js'
 import { validateIdField } from '../validations/fieldValidator.js'
 import { validateJobToCreate, validateJobToUpdate } from '../validations/jobSchemaValidator.js'
 
 export const findAllHandler = async (req, res, next) => {
   try {
+    const { state } = req.query
+    if (state && !JobStateTypeAsList.includes(state)) {
+      return res.status(400).json({ msg: 'state not valid' }).end()
+    }
+
     const { role } = req.user
     let list = []
     if (isGestor({ role })) {
-      list = await findAll()
+      list = await findAll({ state })
     } else {
-      list = await findJobByEmployee({ userId: req.user.id })
+      list = await findJobByEmployee({ userId: req.user.id, state })
     }
     const listUnreadMessages = await getAllUnreadMessage({ isGestor: isGestor({ role }) })
 
@@ -166,6 +173,54 @@ export const deliveryNoteByJobIdHandler = async (req, res, next) => {
     return res.json(jobToDeliveryNote({ job })).end()
   } catch (error) {
     console.log('STEP: [deliveryNoteByJobId]', error)
+    next(error)
+  }
+}
+
+export const findAllBillingByYear = async (req, res, next) => {
+  try {
+    console.log('STEP: [INIT findAllBillingByYear]')
+
+    const { error, value: { year } } = validateSearchByYear(req.query)
+    if (error) {
+      return res.status(400).json({ msg: error }).end()
+    }
+
+    let invoiceListForm
+    const { role, id } = req.user
+    if (isGestor({ role })) {
+      const invoiceDBList = await getAllInvoicesByYear({ year })
+      invoiceListForm = invoiceDBListToForm(invoiceDBList)
+    } else {
+      const userDB = await findUserById(id)
+      if (!userDB) {
+        return res.status(404).json({ msg: 'User not found' }).end()
+      }
+
+      const invoiceDBList = await getAllInvoicesByYear({ year, userId: id })
+      invoiceListForm = invoiceDBListUserToForm(invoiceDBList, userDB)
+    }
+
+    return res.json(invoiceListForm).end()
+  } catch (error) {
+    console.log('STEP: [findAllBillingByYear]', error)
+    next(error)
+  }
+}
+
+export const createInvoiceOnDemand = async (req, res, next) => {
+  try {
+    console.log('STEP: [INIT findAllBillingByYear]')
+    const { year, month } = req.body
+
+    const processOK = await executeBillingProcessOnDemand({ year, month })
+    if (processOK) {
+      return res.status(201).end()
+    }
+
+    return res.status(400).end()
+  } catch (error) {
+    console.log('STEP: [findAllBillingByYear]', error)
     next(error)
   }
 }

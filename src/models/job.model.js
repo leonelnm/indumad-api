@@ -41,8 +41,8 @@ Job.init({
 
   budgetAccepted: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
-    allowNull: false,
+    // defaultValue: false,
+    // allowNull: false,
     validate: {
       isIn: {
         args: [[true, false]],
@@ -70,6 +70,10 @@ Job.init({
   // Precio + IVA
   finalPrice: {
     type: DataTypes.STRING(15)
+  },
+
+  closedAt: {
+    type: DataTypes.DATE
   }
 
 }, {
@@ -83,6 +87,7 @@ Job.init({
         'UserId', 'employeeId',
         'ReferenceId', 'referenceId',
         'GuildId', 'guildId'
+        // 'InvoiceId', 'invoiceId'
       ]
     },
     include: [
@@ -92,5 +97,18 @@ Job.init({
       { model: Guild, as: 'guild' },
       { model: Reference, as: 'reference' }
     ]
+  },
+  scopes: {
+    billing: {
+      attributes: {
+        exclude: [
+          'ContactId', 'contactId',
+          'ClientId', 'clientId',
+          'UserId', 'employeeId',
+          'ReferenceId', 'referenceId',
+          'GuildId', 'guildId'
+        ]
+      }
+    }
   }
 })

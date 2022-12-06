@@ -3,12 +3,14 @@ import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
+import cron from 'node-cron'
 import config from './config/config.js'
 import handleError from './middlewares/handleError.js'
 import notFoundError from './middlewares/notFoundError.js'
 import loginLimiter from './middlewares/rateLimiter.js'
 import router from './routes/index.js'
 import { Environtment } from './types/roleEnumType.js'
+import { executeCronBillingProcess } from './services/billing.service.js'
 
 const app = express()
 
@@ -37,5 +39,9 @@ app.use(notFoundError)
 
 // handle error
 app.use(handleError)
+
+// set crone
+
+cron.schedule(config.billing.cronExpression, executeCronBillingProcess)
 
 export default app

@@ -1,3 +1,4 @@
+import { getInvoiceDateFromJobList } from '../services/billing.service.js'
 import { JobStateType } from '../types/jobStateEnumType.js'
 
 export const toNewUser = (userFromRequest) => {
@@ -87,6 +88,9 @@ export const toGuildOrReferencedUpdate = ({ dataFromRequest = {} }) => {
 export const jobToForm = (job = {}, unreadMessages = 0) => {
   const form = { ...job }
   form.hasDeliveryNote = job.state !== JobStateType.INITIAL
+  form.pendingApproval = job.state === JobStateType.BUDGET_VALIDATE
+  form.allowSendBudget = job.state === JobStateType.PENDING_BUDGET
+  form.inProgress = job.state === JobStateType.BUDGET_AUTHORIZED
   form.unreadMessages = unreadMessages
 
   return form
@@ -139,4 +143,50 @@ export const employeeScheduleToForm = ({ description, dateTime, duration, jobId 
 
 export const employeeListScheduleToForm = (list) => {
   return list.map(employeeScheduleToForm)
+}
+
+export const jobOnInvoice = (job) => {
+  return {
+    id: job.id,
+    start: job.createdAt,
+    end: job.closedAt,
+    client: job.client.name,
+    contact: job.contact.name,
+    address: job.contact.address,
+    price: job.budgetProposal,
+    worker: `${job.employee.name} ${job.employee.lastname}`
+  }
+}
+
+export const jobListOnInvoice = (list = []) => {
+  return list.map(jobOnInvoice)
+}
+
+export const invoiceDBToForm = (invoice) => {
+  return {
+    amountJobs: invoice.amountJobs,
+    invoiceDate: invoice.invoiceDate,
+    iva: invoice.iva,
+    subtotal: invoice.subtotal,
+    total: invoice.total,
+    jobs: jobListOnInvoice(invoice.getDataValue('Jobs'))
+  }
+}
+
+export const invoiceDBListToForm = (invoiceDBList = []) => {
+  return invoiceDBList.map(invoiceDBToForm)
+}
+
+export const invoiceDBListUserToForm = (invoiceDBList = [], userDB) => {
+  const fullname = `${userDB.name} ${userDB.lastname}`
+  return invoiceDBList.map(invoice => convertCustomInvoice(invoice, fullname))
+}
+
+const convertCustomInvoice = (invoiceDB, fullname) => {
+  const jobs = invoiceDB.getDataValue('Jobs')
+  return {
+    ...getInvoiceDateFromJobList(jobs, invoiceDB.invoiceDate),
+    fullname,
+    jobs: jobListOnInvoice(jobs)
+  }
 }

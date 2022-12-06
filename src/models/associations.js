@@ -2,6 +2,7 @@ import { Client } from './client.model.js'
 import { Contact } from './contact.model.js'
 import { Evidence } from './evidence.model.js'
 import { Guild } from './guild.model.js'
+import { Invoice } from './invoice.js'
 import { Job } from './job.model.js'
 import { Note } from './notes.model.js'
 import { Reference } from './reference.model.js'
@@ -60,3 +61,7 @@ Schedule.belongsTo(Job, { as: 'job' })
 
 User.hasMany(Schedule)
 Schedule.belongsTo(User, { as: 'employee' })
+
+// Billing
+Invoice.hasMany(Job)
+Job.belongsTo(Invoice)

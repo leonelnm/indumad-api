@@ -1,5 +1,6 @@
 import { compare } from '../helper/compare.js'
 import { toGuildOrReferencedUpdate } from '../helper/converter.js'
+import { countJobByReference } from '../services/job.service.js'
 import { createReference, deleteReference, findAll, findReference } from '../services/reference.service.js'
 import { validateGuildSchemaOnCreate, validateGuildSchemaOnUpdate, validateNameParemeter } from '../validations/guildSchemaValidator.js'
 
@@ -66,6 +67,11 @@ export const deleteHandler = async (req, res, next) => {
     const { error, value: name } = validateNameParemeter(req.params.name)
     if (error) {
       return res.status(400).json({ msg: error }).end()
+    }
+
+    const jobs = await countJobByReference({ referenceName: name })
+    if (jobs > 0) {
+      return res.status(400).json({ msg: 'Reference associated with jobs' }).end()
     }
 
     const response = await deleteReference(name)
